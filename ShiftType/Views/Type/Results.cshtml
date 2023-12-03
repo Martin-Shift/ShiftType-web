@@ -1,0 +1,333 @@
+﻿@{
+    Layout = "_Layout";
+    var accuracy = Math.Floor(((Model.Wpm - Model.Errors) / Model.Wpm) * 100);
+    var typeSeconds = JsonSerializer.Deserialize<int[]>(Model.TypedSeconds);
+    var consistency = (int)(((double)typeSeconds.Min() / typeSeconds.Max()) * 100);
+}
+@model Result;
+@using System.Text.Json;
+@using ShiftType.DbModels;
+<script src="https://cdnjs.cloudflare.com/ajax/libs/canvasjs/1.7.0/canvasjs.min.js" integrity="sha512-FJ2OYvUIXUqCcPf1stu+oTBlhn54W0UisZB/TNrZaVMHHhYvLBV9jMbvJYtvDe5x/WVaoXZ6KB+Uqe5hT2vlyA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<main style="height:100%" class="">
+    <div class="page pageTest active" style="opacity: 1;">
+        <div id="testConfig" class="invisible">
+            <div class="row">
+                <div class="puncAndNum" style="opacity: 1;">
+                    <div class="textButton punctuationMode"><i class="fas fa-fw fa-at"></i> punctuation</div>
+                    <div class="textButton numbersMode"><i class="fas fa-fw fa-hashtag"></i> numbers</div>
+                </div>
+                <div class="spacer leftSpacer"></div>
+                <div class="mode">
+                    <div class="textButton active" mode="time"><i class="fas fa-fw fa-clock"></i> time</div>
+                    <div class="textButton" mode="words"><i class="fas fa-fw fa-font"></i> words</div>
+                    <div class="textButton" mode="quote"><i class="fas fa-fw fa-quote-left"></i> quote</div>
+                    <div class="textButton" mode="zen"><i class="fas fa-fw fa-mountain"></i> zen</div>
+                    <div class="textButton" mode="custom"><i class="fas fa-fw fa-wrench"></i> custom</div>
+                </div>
+                <div class="spacer rightSpacer"></div>
+                <div class="time">
+                    <div class="textButton active" timeconfig="15"><span>15</span></div>
+                    <div class="textButton" timeconfig="30"><span>30</span></div>
+                    <div class="textButton" timeconfig="60"><span>60</span></div>
+                    <div class="textButton" timeconfig="120"><span>120</span></div>
+                    <div class="textButton" timeconfig="custom"><i class="fas fa-fw fa-tools"></i></div>
+                </div>
+                <div class="wordCount hidden">
+                    <div class="textButton" wordcount="10"><span>10</span></div>
+                    <div class="textButton" wordcount="25"><span>25</span></div>
+                    <div class="textButton" wordcount="50"><span>50</span></div>
+                    <div class="textButton" wordcount="100"><span>100</span></div>
+                    <div class="textButton" wordcount="custom"><i class="fas fa-fw fa-tools"></i></div>
+                </div>
+                <div class="quoteLength hidden">
+                    <div class="textButton" quotelength="-1">all</div>
+                    <div class="textButton" quotelength="0">short</div>
+                    <div class="textButton" quotelength="1">medium</div>
+                    <div class="textButton" quotelength="2">long</div>
+                    <div class="textButton" quotelength="3">thicc</div>
+                    <div class="textButton favorite" quotelength="-3"><i class="fas fa-heart"></i></div>
+                    <div class="textButton" quotelength="-2"><i class="fas fa-search"></i></div>
+                </div>
+                <div class="zen hidden">
+                    <div class="textButton" style="width:0;padding-left:0;padding-right:0"> </div>
+                </div>
+                <div class="customText hidden">
+                    <div class="textButton">change</div>
+                </div>
+            </div>
+        </div>
+        <div id="mobileTestConfig" class="invisible">
+            <div class="textButton"><i class="fas fa-fw fa-cog"></i> Test Settings</div>
+        </div>
+        <div id="typingTest" style="opacity: 0;" class="hidden">
+            <div id="capsWarning" class="hidden"><i class="fas fa-lock"></i> Caps Lock</div>
+            <div id="memoryTimer" style="opacity: 0;">Time left to memorise all words: 0s</div>
+            <div id="layoutfluidTimer" style="opacity: 0;">Time left to memorise all words: 0s</div>
+            <div id="testModesNotice">
+                <div class="textButton" commands="languages"><i class="fas fa-globe-americas"></i>english</div>
+            </div>
+            <div id="timerNumber" class="timerMain" style="opacity: 0;">
+                <div>0</div>
+            </div>
+            <div id="miniTimerAndLiveWpm" class="timerMain" style="font-size: 1.5rem;">
+                <div class="time hidden" style="opacity: 0;">1:00</div>
+                <div class="wpm hidden">109</div>
+                <div class="acc hidden">97%</div>
+                <div class="burst hidden">0</div>
+            </div>
+            <div class="outOfFocusWarning hidden" style="line-height: 114px;">
+                <i class="fas fa-mouse-pointer"></i> Click
+                here or start typing to focus
+            </div><input id="wordsInput" class="" autocomplete="off"
+                         autocapitalize="off" autocorrect="off" data-gramm="false" data-gramm_editor="false"
+                         data-enable-grammarly="false" list="autocompleteOff" spellcheck="false" style="left: 0px; top: 94px;">
+            <div id="wordsWrapper" translate="no" style="height: 114px; overflow: hidden;">
+                <div id="paceCaret" class="hidden default" style="font-size: 1.5rem; top: -38.4px;"></div>
+                <div id="caret" class="default hidden"
+                     style="font-size: 1.5rem; animation-name: caretFlashSmooth; opacity: 1; display: block; top: 41.6px; left: 89px;">
+                </div>
+                <div id="words" class="highlight-letter"
+                     style="font-size: 1.5rem; height: 152px; overflow: hidden; width: 100%; margin-left: unset; transition: none 0s ease 0s;">
+                </div>
+            </div>
+            <div id="koInputVisualContainer" style="display: none; transition: none 0s ease 0s;" class="">
+                <div id="koInputVisual" aria-label="Korean Input Visual" class=""></div>
+            </div>
+            <div id="keymap" class="hidden"></div><button id="restartTestButton" aria-label="Restart Test"
+                                                          data-balloon-pos="down" class="text hidden" onclick="this.blur()">
+                <i class="fas fa-fw fa-redo-alt"></i>
+            </button>
+            <div id="largeLiveWpmAndAcc" class="timerMain">
+                <div id="liveWpm" class="hidden">109</div>
+                <div id="liveAcc" class="hidden">97%</div>
+                <div id="liveBurst" class="hidden">0</div>
+            </div>
+            <div id="monkey" class="hidden" style="opacity: 1; animation-duration: 0s;">
+                <div class="up"></div>
+                <div class="left hidden"></div>
+                <div class="right hidden"></div>
+                <div class="both hidden"></div>
+                <div class="fast" style="opacity: 0;">
+                    <div class="up"></div>
+                    <div class="left hidden"></div>
+                    <div class="right hidden"></div>
+                    <div class="both hidden"></div>
+                </div>
+            </div>
+            <div id="premidTestMode" class="hidden">time 15 english</div>
+            <div id="premidSecondsLeft" class="hidden">0</div>
+        </div>
+        <div id="result" class="" tabindex="-1" style="opacity: 1;">
+            <div class="stats">
+                <div class="group wpm">
+                    <div class="top">
+                        <div class="text">wpm</div>
+                        <div class="crown hidden" aria-label="" data-balloon-pos="up" style="opacity: 0;">
+                            <i class="fas fa-crown"></i>
+                        </div>
+                    </div>
+                    <div class="bottom" aria-label="106.38 wpm" data-balloon-pos="up">@Model.Wpm</div>
+                </div>
+                <div class="group acc">
+                    <div class="top">acc</div>
+                    <div class="bottom" aria-label="97.14% (@(Model.TypedText.Length-Model.Errors) correct / @Model.Errors incorrect)" data-balloon-pos="up">@(accuracy)%</div>
+                </div>
+            </div>
+            <div class="stats morestats">
+                <div class="group testType">
+                    <div class="top">test type</div>
+                    <div class="bottom">@((ShiftType.Models.TestTypes)Model.TestType) <br>english</div>
+                    <div class="tags hidden" style="margin-top:.5rem">
+                        <div class="top">
+                            tags<div class="textButton editTagsButton" result-id="656b5f887275ef81404b05e0"
+                                     active-tag-ids="" aria-label="Edit tags" role="button" data-balloon-pos="right">
+                                <i class="fas fa-pen fa-fw"></i>
+                            </div>
+                        </div>
+                        <div class="bottom">
+                            <div class="noTags">no tags</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="group info hidden">
+                    <div class="top">other</div>
+                    <div class="bottom">-</div>
+                </div>
+                <div class="group raw">
+                    <div class="top">raw</div>
+                    <div class="bottom" aria-label="110.37 wpm" data-balloon-pos="up">@(Model.Wpm+Model.Errors)</div>
+                </div>
+                <div class="group key">
+                    <div class="top">characters</div>
+                    <div class="bottom" aria-label="correct, incorrect, extra, and missed" data-balloon-break=""
+                         data-balloon-pos="up">
+                        @(Model.TypedText.Length - Model.Errors)/@Model.Errors/0/0
+                    </div>
+                </div>
+                <div class="group flat consistency">
+                    <div class="top">consistency</div>
+                    <div class="bottom" aria-label="77.64% (25.99% key)" data-balloon-pos="up">@(consistency)%</div>
+                </div>
+                <div class="group time">
+                    <div class="top">time</div>
+                    <div class="bottom" aria-label="15s (0s afk 0%)" data-balloon-pos="up">
+                        <div class="text">15s</div>
+                        <div class="afk"></div>
+                    </div>
+                </div>
+                <div class="group dailyLeaderboard hidden">
+                    <div class="top">daily leaderboard</div>
+                    <div class="bottom">-</div>
+                </div>
+                <div class="group source hidden">
+                    <div class="top">
+                        source <span id="reportQuoteButton" class="textButton" aria-label="Report quote"
+                                     data-balloon-pos="up" style="display:inline-block">
+                            <i class="icon fas fa-flag"></i>
+                        </span><span id="favoriteQuoteButton" class="textButton hidden" aria-label="Favorite quote"
+                                     data-balloon-pos="up" style="display:inline-block">
+                            <i class="icon far fa-heart"></i>
+                        </span><span id="rateQuoteButton" class="textButton hidden" aria-label="Rate quote"
+                                     data-balloon-pos="up"><i class="icon far fa-star"></i> <span class="rating"></span></span>
+                    </div>
+                    <div class="bottom">-</div>
+                </div>
+            </div>
+            <div class="chart">
+                <canvas id="wpmChart"
+                        style="display: block; box-sizing: border-box; height: 200px; width: 500px;" height="250"
+                        width="625"></canvas>
+            </div>
+            <div class="bottom" style="grid-column:1/3">
+                <div id="resultWordsHistory" class="hidden">
+                    <div class="title">
+                        <span>input history</span> <span id="copyWordsListButton" class="textButton"
+                                                         aria-label="Copy words list" data-balloon-pos="up" style="display:inline-block">
+                            <i class="fas fa-fw fa-copy"></i>
+                        </span><span id="toggleBurstHeatmap" class="textButton"
+                                     aria-label="Toggle burst heatmap" data-balloon-pos="up" style="display:inline-block">
+                            <i class="fas fa-fw fa-fire-alt"></i>
+                        </span>
+                        <div class="heatmapLegend">
+                            <div class="boxes">
+                                <div class="box box0" style="background: rgb(244, 71, 71);">
+                                    <div>
+                                        <nan< div=""></nan<>
+                                    </div>
+                                </div>
+                                <div class="box box1" style="background: rgb(228, 142, 142);">
+                                    <div>NaN-NaN</div>
+                                </div>
+                                <div class="box box2" style="background: rgb(212, 212, 212);">
+                                    <div>NaN-NaN</div>
+                                </div>
+                                <div class="box box3" style="background: rgb(106, 167, 208);">
+                                    <div>NaN-NaN</div>
+                                </div>
+                                <div class="box box4" style="background: rgb(0, 122, 204);">
+                                    <div>NaN+</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="words"></div>
+                </div>
+                <div id="resultReplay" class="hidden">
+                    <div class="title">
+                        watch replay <span id="playpauseReplayButton" class="textButton"
+                                           aria-label="Resume replay" data-balloon-pos="up" style="display:inline-block">
+                            <i class="fas fa-play"></i>
+                        </span>
+                        <p id="replayStats"></p>
+                    </div>
+                    <div id="wordsWrapper">
+                        <div id="replayWords" class="words"></div>
+                    </div>
+                </div><button id="retrySavingResultButton" class="danger hidden" onclick="this.blur()">
+                    <i class="fas fa-redo"></i> Retry saving result
+                </button>
+                <div class="buttons">
+                    <button class="text" id="nextTestButton" aria-label="Next test" role="button"
+                            data-balloon-pos="down" onclick="this.blur()">
+                        <i class="fas fa-fw fa-chevron-right"></i>
+                    </button> <button class="text"
+                                      id="restartTestButtonWithSameWordset" aria-label="Repeat test" role="button"
+                                      data-balloon-pos="down" onclick="this.blur()">
+                        <i class="fas fa-fw fa-sync-alt"></i>
+                    </button>
+                    <button class="text" id="practiseWordsButton" aria-label="Practice words" role="button"
+                            data-balloon-pos="down" onclick="this.blur()">
+                        <i class="fas fa-fw fa-exclamation-triangle"></i>
+                    </button> <button class="text"
+                                      id="showWordHistoryButton" aria-label="Toggle words history" role="button"
+                                      data-balloon-pos="down" onclick="this.blur()">
+                        <i class="fas fa-fw fa-align-left"></i>
+                    </button>
+                    <button class="text" id="watchReplayButton" aria-label="Watch replay" role="button"
+                            data-balloon-pos="down" onclick="this.blur()">
+                        <i class="fas fa-fw fa-backward"></i>
+                    </button>
+                    <button class="text" id="saveScreenshotButton" aria-label="Copy screenshot to clipboard"
+                            role="button" data-balloon-pos="down" onclick="this.blur()">
+                        <i class="far fa-fw fa-image"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="loginTip hidden"><a href="/login" router-link="">Sign in</a> to save your result</div>
+            <div style="grid-column:span 2">
+                <div id="ad-result-wrapper" class="ad advertisement ad-h" style="display: none !important;">
+                    <div class="iconAndText">
+                        <div class="icon"><i class="fas fa-ad"></i></div>
+                        <div class="text textRight"></div>
+                    </div>
+                    <div id="ad-result"></div>
+                </div>
+                <div id="ad-result-small-wrapper" class="ad advertisement ad-h-s" style="display: none !important;">
+                    <div class="icon small"><i class="fas fa-ad"></i></div>
+                    <div id="ad-result-small"></div>
+                </div>
+            </div>
+            <div class="ssWatermark hidden">monkeytype.com</div>
+        </div>
+        <div></div>
+    </div>
+</main>
+<script>
+    var ctx = document.getElementById('wpmChart').getContext('2d');
+    var jsonTypedSeconds = JSON.parse(`@Html.Raw(Model.TypedSeconds)`);
+    let labels = [];
+    for(let i = 0;i<jsonTypedSeconds.length;i++)
+    {
+        labels.push(i+1);
+    }
+    console.log(jsonTypedSeconds);
+    console.log(labels);
+    var chartData = {
+        labels: labels,
+        datasets: [{
+            label: 'wpm',
+            backgroundColor: '#191919', 
+            borderColor: ' #007acc', 
+            borderWidth: 1,
+            data: jsonTypedSeconds, 
+        }]
+    };
+
+    var chartOptions = {
+        responsive: true, 
+        maintainAspectRatio: false,
+        scales: {
+            y: {
+                beginAtZero: true 
+            }
+        }
+    };
+
+    var myChart = new Chart(ctx, {
+        type: 'line',
+        data: chartData,
+        options: chartOptions
+    });
+
+</script>

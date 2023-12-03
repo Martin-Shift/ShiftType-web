@@ -1,0 +1,58 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    Layout = "_Layout";
+}
+
+<div class="page pageLogin active" id="pageLogin" style="opacity: 1;">
+    <div class="preloader hidden"><i class="fas fa-fw fa-spin fa-circle-notch"></i></div>
+    <div class="login side">
+        <div class="title">login</div>
+
+        <button class="text" id="forgotPasswordButton">Forgot password?</button>
+        <form>
+            <input id="LoginInput" name="current-email" type="email" placeholder="email" autocomplete="current-email">
+            <input id="Password" name="current-password" type="password" placeholder="password" autocomplete="current-password"><div>
+                <label id="rememberMe" class="checkbox">
+                    <input type="checkbox" checked="checked"><div>Remember me</div>
+                </label>
+            </div>
+            <button type="submit" style="display:none"></button>
+            <button onclick="submitLogin()" class="signIn">
+                <i class="fas fa-sign-in-alt"></i> Sign In
+            </button>
+            <div style="font-size:.75rem;text-align:center">or</div>
+            <button class="signInWithGoogle"><i class="fab fa-google"></i> Google Sign In</button>
+        </form>
+        <button class="text" onclick="gotoRegister()" >New Here?</button>
+    </div>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+<script>
+    function submitLogin() {
+        const loginOrEmail = $("#LoginInput").val();
+        const password = $("#Password").val();
+
+        const loginData = {
+            LoginOrEmail: loginOrEmail,
+            Password: password
+        };
+        fetch('/Auth/SubmitLogin', {
+            method: 'POST',
+            body: JSON.stringify(loginData),
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+            .then(response => response.json())
+            .then(data=>{
+                window.location.href="/";
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+    }
+   
+</script>

@@ -1,0 +1,136 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    Layout = "_Layout";
+}
+<div class="page pageLogin active" id="pageLogin" style="opacity: 1;">
+    <div class="preloader hidden"><i class="fas fa-fw fa-spin fa-circle-notch"></i></div><div class="register side">
+        <div class="title">register</div>
+            <div class="inputAndIndicator">
+                <input id="Username" class="usernameInput" placeholder="username" autocomplete="new-username"><div class="statusIndicator">
+                    <div class="indicator level1 hidden" data-option-id="available" data-balloon-pos="up">
+                        <i class="fas fa-fw fa-check "></i>
+                    </div>
+
+                    <div class="indicator level-1 hidden" data-option-id="unavailable" data-balloon-pos="up">
+                        <i class="fas fa-fw fa-times "></i>
+                    </div>
+
+                    <div class="indicator level-1 hidden" data-option-id="taken" data-balloon-pos="up">
+                        <i class="fas fa-fw fa-times "></i>
+                    </div>
+
+                    <div class="indicator level0 hidden" data-option-id="checking" data-balloon-pos="up">
+                        <i class="fas fa-fw fa-circle-notch fa-spin"></i>
+                    </div>
+                </div>
+            </div> <div class="inputAndIndicator">
+                <input id="Email" type="email" class="emailInput" placeholder="email" autocomplete="new-email"><div class="statusIndicator">
+                    <div class="indicator level1 hidden" data-option-id="valid" data-balloon-pos="up">
+                        <i class="fas fa-fw fa-check "></i>
+                    </div>
+
+                    <div class="indicator level-1 hidden" data-option-id="invalid" data-balloon-pos="up">
+                        <i class="fas fa-fw fa-times "></i>
+                    </div>
+
+                    <div class="indicator level1 hidden" data-option-id="typo" data-balloon-pos="up">
+                        <i class="fas fa-fw fa-exclamation-triangle "></i>
+                    </div>
+
+                    <div class="indicator level1 hidden" data-option-id="edu" data-balloon-pos="up">
+                        <i class="fas fa-fw fa-exclamation-triangle "></i>
+                    </div>
+                </div>
+            </div> <div class="inputAndIndicator">
+            <input id="ConfirmEmail" type="email" class="verifyEmailInput" placeholder="verify email" autocomplete="verify-email"><div class="statusIndicator">
+                    <div class="indicator level1 hidden" data-option-id="match" data-balloon-pos="up">
+                        <i class="fas fa-fw fa-check "></i>
+                    </div>
+
+                    <div class="indicator level-1 hidden" data-option-id="mismatch" data-balloon-pos="up">
+                        <i class="fas fa-fw fa-times "></i>
+                    </div>
+                </div>
+            </div> <div class="inputAndIndicator">
+            <input id="Password" type="password" class="passwordInput" placeholder="password" autocomplete="new-password" name="new-password"><div class="statusIndicator">
+                    <div class="indicator level1 hidden" data-option-id="good" data-balloon-pos="up">
+                        <i class="fas fa-fw fa-check "></i>
+                    </div>
+
+                    <div class="indicator level-1 hidden" data-option-id="short" data-balloon-pos="up">
+                        <i class="fas fa-fw fa-times "></i>
+                    </div>
+
+                    <div class="indicator level-1 hidden" data-option-id="long" data-balloon-pos="up">
+                        <i class="fas fa-fw fa-times "></i>
+                    </div>
+
+                    <div class="indicator level-1 hidden" data-option-id="weak" data-balloon-pos="up">
+                        <i class="fas fa-fw fa-times "></i>
+                    </div>
+                </div>
+            </div> <div class="inputAndIndicator">
+            <input id="ConfirmPassword" type="password" class="verifyPasswordInput" placeholder="verify password" autocomplete="verify-password" name="verify-password"><div class="statusIndicator">
+                    <div class="indicator level1 hidden" data-option-id="match" data-balloon-pos="up">
+                        <i class="fas fa-fw fa-check "></i>
+                    </div>
+
+                    <div class="indicator level-1 hidden" data-option-id="mismatch" data-balloon-pos="up">
+                        <i class="fas fa-fw fa-times "></i>
+                    </div>
+                </div>
+            </div> <button onclick="submitRegister()"><i class="fas fa-user-plus"></i> Sign Up</button>
+    </div>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script>
+   function submitRegister() {
+        const login = $("#Username").val();
+        const email = $("#Email").val();
+        const confirmEmail = $("#ConfirmEmail").val();
+        const password = $("#Password").val();
+        const confirmPassword = $("#ConfirmPassword").val();
+
+        // Perform client-side validation if needed
+        if (!login || !email || email != confirmEmail || !password || password !== confirmPassword) {
+            console.log(login);
+            console.log(email);
+            console.log(confirmEmail);
+            console.log(password);
+            console.log(confirmPassword);
+            return;
+        }
+
+        const registrationData = {
+            Login: login,
+            Email: email,
+            Password: password,
+            ConfirmPassword: confirmPassword
+        };
+        console.log(registrationData)
+
+
+        fetch('/Auth/SubmitRegister', {
+            method: 'POST',
+            body: JSON.stringify(registrationData),
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+            .then(response => response.json())
+            .then(data => {
+                window.location.href = "";
+            })
+            .catch(error => {
+
+                console.error('Error:', error);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'An error occurred. Please try again.',
+                });
+            });
+    }
+</script>

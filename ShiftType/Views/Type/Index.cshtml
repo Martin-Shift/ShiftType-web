@@ -1,0 +1,327 @@
+﻿
+@{
+    Layout = "_Layout";
+}
+
+@section styles{
+    <style>
+     
+    </style>
+    }
+@section header{
+
+    }
+
+        <main style="height:100%" class="">
+            <div class="page pageTest active" style="opacity: 1;">
+                <div id="testConfig">
+                    <div class="row" id="overallBar" style=" transition: width 0.3s ease-in-out;">
+                        <div class="puncAndNum" style="opacity: 1;">
+                            <div class="textButton punctuationMode"><i class="fas fa-fw fa-at"></i> punctuation</div>
+                            <div class="textButton numbersMode"><i class="fas fa-fw fa-hashtag"></i> numbers</div>
+                        </div>
+                        <div class="spacer leftSpacer"></div>
+                        <div class="mode">
+                            <div id="timeSwitch" class="textButton active" mode="time"><i class="fas fa-fw fa-clock"></i> time</div>
+                            <div id="wordSwitch" class="textButton" mode="words"><i class="fas fa-fw fa-font"></i> words</div>
+                            <div id="quoteSwitch" class="textButton" mode="quote"><i class="fas fa-fw fa-quote-left"></i> quote</div>
+                            <div id="zenSwitch" class="textButton" mode="zen"><i class="fas fa-fw fa-mountain"></i> zen</div>
+                            <div id="customSwitch" class="textButton" mode="custom"><i class="fas fa-fw fa-wrench"></i> custom</div>
+                        </div>
+                        <div class="spacer rightSpacer"></div>
+                        <div class="time">
+                            <div class="textButton active" timeconfig="15"><span>15</span></div>
+                            <div class="textButton" timeconfig="30"><span>30</span></div>
+                            <div class="textButton" timeconfig="60"><span>60</span></div>
+                            <div class="textButton" timeconfig="120"><span>120</span></div>
+                            <div class="textButton" timeconfig="custom"><i class="fas fa-fw fa-tools"></i></div>
+                        </div>
+                        <div class="wordCount hidden">
+                            <div class="textButton" wordcount="10"><span>10</span></div>
+                            <div class="textButton" wordcount="25"><span>25</span></div>
+                            <div class="textButton" wordcount="50"><span>50</span></div>
+                            <div class="textButton" wordcount="100"><span>100</span></div>
+                            <div class="textButton" wordcount="custom"><i class="fas fa-fw fa-tools"></i></div>
+                        </div>
+                        <div class="quoteLength hidden">
+                            <div class="textButton" quotelength="0">all</div>
+                            <div class="textButton" quotelength="1">short</div>
+                            <div class="textButton" quotelength="2">medium</div>
+                            <div class="textButton" quotelength="3">long</div>
+                            <div class="textButton" quotelength="4">thicc</div>
+                            <div class="textButton favorite" quotelength="-3"><i class="fas fa-heart"></i></div>
+                            <div class="textButton" quotelength="-2"><i class="fas fa-search"></i></div>
+                        </div>
+                        <div class="zen hidden">
+                            <div class="textButton" style="width:0;padding-left:0;padding-right:0"> </div>
+                        </div>
+                        <div class="customText hidden">
+                            <div class="textButton">change</div>
+                        </div>
+                    </div>
+                </div>
+                <div id="mobileTestConfig">
+                    <div class="textButton"><i class="fas fa-fw fa-cog"></i> Test Settings</div>
+                </div>
+                <div id="typingTest" style="opacity: 1;">
+                    <div id="testModesNotice">
+                        <div class="textButton" commands="languages"><i class="fas fa-globe-americas"></i><p id="language">english</p></div>
+                    </div>
+                    <div id="miniTimerAndLiveWpm" class="timerMain" style="font-size: 1.5rem;">
+                        <div id="time-remaining" class="time" style="opacity: 0.25;">31
+
+                        </div>
+                        <div class="wpm hidden">31
+
+                        </div>
+                        <div class="acc hidden">88%
+
+                        </div
+                        ><div class="burst hidden">0
+
+                        </div>
+                        </div>
+                    <div class="outOfFocusWarning hidden" style="line-height: 114px;">
+                        <i class="fas fa-mouse-pointer"></i> Click here or start typing to focus
+                    </div><input id="wordsInput" class="" autocomplete="off" autocapitalize="off" autocorrect="off"
+                                 data-gramm="false" data-gramm_editor="false" data-enable-grammarly="false"
+                                 list="autocompleteOff" spellcheck="false" style="left: 0px; top: 86px;">
+                    <div id="wordsWrapper" translate="no" style="height: 114px; overflow: hidden;">
+                        <div id="paceCaret" class="hidden default" style="font-size: 1.5rem;"></div>
+
+                        <div id="words" class="highlight-letter"
+                             style="font-size: 1.5rem; height: 152px; overflow: hidden; width: 100%; margin-left: unset; transition: none 0s ease 0s;">
+                        </div>
+                    </div>
+                    <div id="koInputVisualContainer" style="display: none; transition: none 0s ease 0s;" class="">
+                        <div id="koInputVisual" aria-label="Korean Input Visual" class=""></div>
+                    </div>
+                    <div id="keymap" class="hidden"></div><button id="restartTestButton" aria-label="Restart Test"
+                                                                  data-balloon-pos="down" class="text hidden" onclick="this.blur()">
+                        <i class="fas fa-fw fa-redo-alt"></i>
+                    </button>
+                    <div id="largeLiveWpmAndAcc" class="timerMain">
+                        <div id="liveWpm" class="hidden">0</div>
+                        <div id="liveAcc" class="hidden">100%</div>
+                        <div id="liveBurst" class="hidden">0</div>
+                    </div>
+                    <div id="premidTestMode" class="hidden">time 15 english</div>
+                    <div id="premidSecondsLeft" class="hidden">15</div>
+                </div>
+            </div>
+        </main>
+
+<script src="~/js/site.js"></script>
+<script src="~/js/modifierControlls.js?v=7"></script>
+<script>
+    // Initialization
+    let currentWordIndex = 0;
+    let currentLetterIndex = 0;
+    let wordsArray = []; // visible array of words
+    let words = [] // original words array
+    let typedLetters = []; // Array to store typed letters
+    let lineEndIndex = 0;
+    let testSeconds = []
+    let previousLetterPos = 0;
+    let timer;
+    let globalModifiers = null;
+let timeRemaining;
+
+// Function to start the timer
+function startTimer() {
+        timeRemaining = globalModifiers.TimeAmount;
+    timer = setInterval(() => {
+        timeRemaining--;
+
+        // Update UI to display the time remaining
+        // For example, update a DOM element with the time remaining
+        document.getElementById('time-remaining').innerText = timeRemaining;
+            testSeconds.push([...typedLetters]);
+        if (timeRemaining <= 0) {
+                clearInterval(timer); // Stop the timer when it reaches zero
+
+                // Prepare the data to be sent in the POST request
+                const data = {
+                    TypedText: typedLetters,
+                    OriginalText: words,
+                    IsNumbers: false,
+                    IsSymbols:false,
+                    TypedSeconds:testSeconds,
+                    Language: document.getElementById('language').textContent,
+                    TimeSpent: globalModifiers.TimeAmount,
+                    Type: 0,
+                };
+
+                // Send a POST request to "type/submit" with the data
+                fetch('type/submit', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(data),
+                })
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Network response was not ok.');
+                        }
+                        return response.json();
+                    })
+                    .then(result => {
+                        console.log(result);
+                       window.location.href=`type/results/${result}`
+                    })
+                    .catch(error => {
+                        // Handle errors here
+                        console.error('There was a problem with the submission:', error);
+                    });
+        }
+    }, 1000); // Update every second (1000 milliseconds)
+}
+
+    //function updateCaretPosition(currentWordIndex, currentLetterIndex) {
+    //    const wordElements = document.querySelectorAll('.word');
+    //    const caret = document.getElementById('caret');
+
+    //    if (currentWordIndex < wordElements.length) {
+    //        const currentWordElement = wordElements[currentWordIndex];
+    //        const letters = currentWordElement.querySelectorAll('letter');
+
+    //        const targetLetter = letters[currentLetterIndex ];
+
+    //        const range = document.createRange();
+    //        const sel = window.getSelection();
+
+    //        range.setStart(targetLetter, 0);
+    //        range.collapse(true);
+    //        sel.removeAllRanges();
+    //        sel.addRange(range);
+
+    //        // Position the caret before the target letter
+    //        targetLetter.parentNode.insertBefore(caret, targetLetter);
+    //    }
+    //}
+    function removeWordsFromUI(startIndex, endIndex) {
+        const wordsContainer = document.querySelector('#words');
+        const wordElements = wordsContainer.querySelectorAll('.word');
+
+        for (let i = startIndex; i <= endIndex; i++) {
+            if (wordElements[i]) {
+                wordElements[i].remove();
+            }
+        }
+    }
+    function resetTest()
+    {
+        clearInterval(timer); 
+        currentWordIndex = 0;
+        currentLetterIndex = 0;
+       typedLetters = [];
+       timer = undefined;
+       words = [];
+       wordsArray = [];
+       previousLetterPos = 0;
+       lineEndIndex = 0;
+       testSeconds= [];
+        getTest(globalModifiers);
+       
+       
+    }
+
+    document.addEventListener('keydown', (event) => {
+        const currentWord = wordsArray[currentWordIndex];
+        const currentLetter = currentWord[currentLetterIndex];
+
+        if (event.key === currentLetter || (event.shiftKey && event.key.toUpperCase() === currentLetter)) {
+            typedLetters.push(event.key);
+            if (globalModifiers.TimeAmount != null && timer === undefined) {
+                startTimer();
+            }
+            const letterElement = document.querySelector(`.word:nth-child(${currentWordIndex + 1}) > letter:nth-child(${currentLetterIndex + 1})`);
+
+            if (letterElement) {
+
+                letterElement.classList.add('correct');
+                currentLetterIndex++;
+                if (currentWordIndex > lineEndIndex && event.key != ' ') {
+                    const currentLetterRect = letterElement.getBoundingClientRect();
+                    if (previousLetterPos === 0) {
+                        previousLetterPos = currentLetterRect.top;
+                    }
+                   
+                    if (currentLetterRect.top !== previousLetterPos && currentLetterRect.top > previousLetterPos) {
+                      
+                        
+                        previousLetterPos = currentLetterRect.top;
+                        if (lineEndIndex >= 1) {
+                            wordsArray.splice(0, lineEndIndex);
+                             removeWordsFromUI(0,lineEndIndex-1); 
+                             currentWordIndex-=(lineEndIndex);
+                        }
+                        lineEndIndex = currentWordIndex;
+                        
+                       console.log(wordsArray);
+                       console.log(words);
+                      
+                    }  
+                   previousLetterPos=currentLetterRect.top;
+                }
+                if (currentLetterIndex === currentWord.length) {
+                    currentWordIndex++;
+                    currentLetterIndex = 0;
+
+                    const activeWord = document.querySelector('.word.active');
+                    if (activeWord) {
+                        activeWord.classList.remove('active');
+                    }
+
+                    const nextWord = document.querySelector(`.word:nth-child(${currentWordIndex + 1})`);
+                    if (nextWord) {
+                        nextWord.classList.add('active');
+                    }
+                }
+            } else {
+
+                console.error('Letter element not found!');
+            }
+        }
+        else if (event.key === 'Backspace') {
+            if (currentLetterIndex > 0) {
+                currentLetterIndex--;
+                typedLetters.pop();
+                const letterElement = document.querySelector(`.word:nth-child(${currentWordIndex + 1}) > letter:nth-child(${currentLetterIndex + 1})`);
+                if (letterElement) {
+                    letterElement.classList.remove('correct', 'incorrect');
+                    const wordElement = document.querySelector(`.word:nth-child(${currentWordIndex + 1})`);
+                    wordElement.classList.remove('error');
+
+                }
+            }
+        }
+        else if (event.key === 'Escape'){
+            resetTest();
+        }
+        else if (event.key.length === 1 && /[a-zA-Z]/.test(event.key)) {
+            if (currentLetterIndex < currentWord.length - 1) {
+                const letterElement = document.querySelector(`.word:nth-child(${currentWordIndex + 1}) > letter:nth-child(${currentLetterIndex + 1})`);
+                if (globalModifiers.TimeAmount != null && timer === undefined) {
+                    startTimer();
+                }
+                if (letterElement) {
+                    typedLetters.push(event.key);
+                    letterElement.classList.add('incorrect');
+                    const wordElement = document.querySelector(`.word:nth-child(${currentWordIndex + 1})`);
+                    wordElement.classList.add('error');
+                    currentLetterIndex++;
+                } else {
+                    console.log(letterElement);
+                    console.error('Letter element not found!');
+                }
+            }
+        }
+        //  updateCaretPosition(currentWordIndex,currentLetterIndex);
+    });
+
+    
+     getTest(createModifiers(0,{TimeAmount:15}));
+
+</script>
