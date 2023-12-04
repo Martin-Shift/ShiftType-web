@@ -119,6 +119,3 @@ numbersButton.addEventListener('click', () => {
 
     // TODO logic for handling numbers mode
 });
-
-// Function to update caret position based on currentWordIndex and currentLetterIndex
-

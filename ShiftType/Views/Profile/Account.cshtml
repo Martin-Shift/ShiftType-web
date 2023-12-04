@@ -1,0 +1,404 @@
+﻿@using ShiftType.Models;
+@{
+    Layout = "_Layout";
+}
+
+@model Profile
+
+<main style="height:100%" class="">
+    <div class="page pageAccount active" id="pageAccount" style="opacity: 1; height: unset;">
+        <div class="scrollToTopButton invisible"><i class="fas fa-angle-double-up"></i></div>
+        <div class="preloader hidden" style="opacity: 0;">
+            <div class="icon"><i class="fas fa-fw fa-spin fa-circle-notch"></i></div>
+            <div class="barWrapper hidden">
+                <div class="bar">
+                    <div class="fill" style="width: 100%;"></div>
+                </div>
+                <div class="text">Displaying stats...</div>
+            </div>
+        </div>
+        <div class="content" style="opacity: 1;">
+            <div class="miniResultChartWrapper">
+                <canvas id="miniResultChart"
+                        style="display: block; box-sizing: border-box; height: 0px; width: 0px;" height="0"
+                        width="0"></canvas>
+            </div>
+            <div class="miniResultChartBg"></div>
+            <div class="profile" uid="" name="MrSh1ft">
+                <div class="details soc">
+                    <div class="avatarAndName">
+                        <div class="avatars">
+                            <div class="placeholderAvatar"><i class="fas fa-user-circle"></i></div>
+                            <div class="avatar"></div>
+                        </div>
+                        <div>
+                            <div class="name" style="font-size: 32px;">MrSh1ft</div>
+                            <div class="badges"></div>
+                            <div class="allBadges"></div>
+                            <div class="joined" data-balloon-pos="up" aria-label="674 days ago">Joined 29 Jan 2022</div>
+                            <div class="streak" data-balloon-pos="up" data-balloon-length="large" aria-label="
+                                 Claimed today: yes
+                                 Come back in: 6 hours
+                                 If the streak reset time doesn't line up with your timezone, you can change it in Settings>
+                                Danger zone > Update streak hour offset." data-balloon-break="">
+                            </div>
+                        </div>
+                        <div class="levelAndBar">
+                            <div class="level" data-balloon-pos="up" aria-label="208.8k total xp">91</div>
+                            <div class="xpBar">
+                                <div class="bar" style="width: 78.3592%;"></div>
+                            </div>
+                            <div class="xp" data-balloon-pos="up" aria-label="976 xp until next level">3.5k/4.5k</div>
+                        </div>
+                    </div>
+                    <div class="separator sep1"></div>
+                    <div class="typingStats vertical">
+                        <div class="started">
+                            <div class="title">tests started</div>
+                            <div class="value">5954</div>
+                        </div>
+                        <div class="completed">
+                            <div class="title">tests completed</div>
+                            <div class="value">1712</div>
+                        </div>
+                        <div class="timeTyping">
+                            <div class="title">time typing</div>
+                            <div class="value">14:23:52</div>
+                        </div>
+                    </div>
+                    <div class="separator sep2 hidden"></div>
+                    <div class="bioAndKeyboard vertical hidden">
+                        <div class="bio hidden">
+                            <div class="title">bio</div>
+                            <div class="value"></div>
+                        </div>
+                        <div class="keyboard hidden">
+                            <div class="title">keyboard</div>
+                            <div class="value"></div>
+                        </div>
+                    </div>
+                    <div class="separator sep3"></div>
+                    <div class="socials big">
+                        <div class="title">socials</div>
+                        <div class="value">
+                            <a href="https://github.com/Martin-Shift/" target="_blank" rel="nofollow me"
+                               aria-label="Martin-Shift" data-balloon-pos="up" class="textButton">
+                                <i class="fab fa-fw fa-github"></i>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="buttonGroup">
+                        <button class="editProfileButton" data-balloon-pos="left"
+                                aria-label="Edit profile" role="button">
+                            <i class="fas fa-pen"></i>
+                        </button> <button class="copyLink button" data-balloon-pos="left" aria-label="Copy public link"
+                                          role="button">
+                            <i class="fas fa-link"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="leaderboardsPositions">
+                    <div class="title">All-Time English Leaderboards</div>
+                    <div class="group t15">
+                        <div class="testType">15 seconds</div>
+                        <div class="pos">66929th</div>
+                    </div>
+                    <div class="group t60">
+                        <div class="testType">60 seconds</div>
+                        <div class="pos">67590th</div>
+                    </div>
+                </div>
+                <div class="pbsTime">
+                    <div class="group">
+                        <div class="quick">
+                            <div class="test">15 seconds</div>
+                            <div class="wpm">119</div>
+                            <div class="acc">100%</div>
+                        </div>
+                        <div class="fullTest">
+                            <div>15 seconds</div>
+                            <div>119 wpm</div>
+                            <div>119 raw</div>
+                            <div>100 acc</div>
+                            <div>86 con</div>
+                            <div>19 Nov 2023</div>
+                        </div>
+                    </div>
+
+                    <div class="group">
+                        <div class="quick">
+                            <div class="test">30 seconds</div>
+                            <div class="wpm">98</div>
+                            <div class="acc">96%</div>
+                        </div>
+                        <div class="fullTest">
+                            <div>30 seconds</div>
+                            <div>98 wpm</div>
+                            <div>100 raw</div>
+                            <div>96 acc</div>
+                            <div>74 con</div>
+                            <div>13 Nov 2023</div>
+                        </div>
+                    </div>
+
+                    <div class="group">
+                        <div class="quick">
+                            <div class="test">60 seconds</div>
+                            <div class="wpm">95</div>
+                            <div class="acc">94%</div>
+                        </div>
+                        <div class="fullTest">
+                            <div>60 seconds</div>
+                            <div>95 wpm</div>
+                            <div>98 raw</div>
+                            <div>94 acc</div>
+                            <div>73 con</div>
+                            <div>01 Dec 2023</div>
+                        </div>
+                    </div>
+
+                    <div class="group">
+                        <div class="quick">
+                            <div class="test">120 seconds</div>
+                            <div class="wpm">96</div>
+                            <div class="acc">95%</div>
+                        </div>
+                        <div class="fullTest">
+                            <div>120 seconds</div>
+                            <div>96 wpm</div>
+                            <div>97 raw</div>
+                            <div>95 acc</div>
+                            <div>71 con</div>
+                            <div>28 Nov 2023</div>
+                        </div>
+                    </div>
+                    <div class="buttonGroup">
+                        <button class="showAllButton" data-balloon-pos="left" aria-label="Show all personal bests">
+                            <i class="fas fa-ellipsis-v"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="pbsWords">
+                    <div class="group">
+                        <div class="quick">
+                            <div class="test">10 words</div>
+                            <div class="wpm">140</div>
+                            <div class="acc">100%</div>
+                        </div>
+                        <div class="fullTest">
+                            <div>10 words</div>
+                            <div>140 wpm</div>
+                            <div>140 raw</div>
+                            <div>100 acc</div>
+                            <div>62 con</div>
+                            <div>04 Dec 2023</div>
+                        </div>
+                    </div>
+
+                    <div class="group">
+                        <div class="quick">
+                            <div class="test">25 words</div>
+                            <div class="wpm">112</div>
+                            <div class="acc">97%</div>
+                        </div>
+                        <div class="fullTest">
+                            <div>25 words</div>
+                            <div>112 wpm</div>
+                            <div>118 raw</div>
+                            <div>97 acc</div>
+                            <div>78 con</div>
+                            <div>22 Nov 2023</div>
+                        </div>
+                    </div>
+
+                    <div class="group">
+                        <div class="quick">
+                            <div class="test">50 words</div>
+                            <div class="wpm">108</div>
+                            <div class="acc">98%</div>
+                        </div>
+                        <div class="fullTest">
+                            <div>50 words</div>
+                            <div>108 wpm</div>
+                            <div>108 raw</div>
+                            <div>98 acc</div>
+                            <div>74 con</div>
+                            <div>12 Nov 2023</div>
+                        </div>
+                    </div>
+
+                    <div class="group">
+                        <div class="quick">
+                            <div class="test">100 words</div>
+                            <div class="wpm">92</div>
+                            <div class="acc">97%</div>
+                        </div>
+                        <div class="fullTest">
+                            <div>100 words</div>
+                            <div>92 wpm</div>
+                            <div>92 raw</div>
+                            <div>97 acc</div>
+                            <div>74 con</div>
+                            <div>16 Jun 2023</div>
+                        </div>
+                    </div>
+                    <div class="buttonGroup">
+                        <button class="showAllButton" data-balloon-pos="left" aria-label="Show all personal bests">
+                            <i class="fas fa-ellipsis-v"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="group noDataError hidden">No data found. Check your filters.</div>
+            <div class="group chart">
+                <div class="chart">
+                    <canvas id="accountHistoryChart"
+                            style="display: block; box-sizing: border-box; height: 400px; width: 636.8px;" height="500"
+                            width="796"></canvas>
+                </div>
+            </div>
+            <div class="group histogramChart">
+                <div class="chart" style="height:200px">
+                    <canvas id="accountHistogramChart"
+                            style="display: block; box-sizing: border-box; height: 200px; width: 636.8px;" height="250"
+                            width="796"></canvas>
+                </div>
+            </div>
+            <div class="group dailyActivityChart">
+                <div class="chart" style="height:200px">
+                    <canvas id="accountActivityChart"
+                            style="display: block; box-sizing: border-box; height: 200px; width: 636.8px;" height="250"
+                            width="796"></canvas>
+                </div>
+            </div>
+            <div class="group estimatedWordsTyped">
+                <div class="title">estimated words typed</div>
+                <div class="val">25170</div>
+            </div>
+            <div class="triplegroup stats">
+                <div class="group testsStarted">
+                    <div class="title">tests started</div>
+                    <div class="val">4724</div>
+                </div>
+                <div class="group testsCompleted">
+                    <div class="title">
+                        tests completed <span data-balloon-length="xlarge" data-balloon-pos="up"
+                                              aria-label="Due to the increasing number of results in the database, you can now only see your last 1000 results in detail. Total time spent typing, started and completed tests stats will still be up to date at the top of the page, above the filters."
+                                              role="alertdialog"><i class="fas fa-question-circle"></i></span>
+                    </div>
+                    <div class="val">1007(21%)</div>
+                    <div class="avgres">
+                        3.7 restarts per completed test
+                    </div>
+                </div>
+                <div class="group timeTotalFiltered">
+                    <div class="title">time typing</div>
+                    <div class="val">07:35:00</div>
+                </div>
+                <div class="group highestWpm">
+                    <div class="title">highest wpm</div>
+                    <div class="val">140</div>
+                    <div class="mode">words 10</div>
+                </div>
+                <div class="group averageWpm">
+                    <div class="title">average wpm</div>
+                    <div class="val">84</div>
+                </div>
+                <div class="group averageWpm10">
+                    <div class="title">average wpm (last 10 tests)</div>
+                    <div class="val">112</div>
+                </div>
+                <div class="group highestRaw">
+                    <div class="title">highest raw wpm</div>
+                    <div class="val">140</div>
+                    <div class="mode"></div>
+                </div>
+                <div class="group averageRaw">
+                    <div class="title">average raw wpm</div>
+                    <div class="val">87</div>
+                </div>
+                <div class="group averageRaw10">
+                    <div class="title">average raw wpm (last 10 tests)</div>
+                    <div class="val">114</div>
+                </div>
+                <div class="group highestAcc">
+                    <div class="title">highest accuracy</div>
+                    <div class="val">100%</div>
+                </div>
+                <div class="group avgAcc">
+                    <div class="title">avg accuracy</div>
+                    <div class="val">94%</div>
+                </div>
+                <div class="group avgAcc10">
+                    <div class="title">avg accuracy<br>(last 10 tests)</div>
+                    <div class="val">96%</div>
+                </div>
+                <div class="group highestCons">
+                    <div class="title">highest consistency</div>
+                    <div class="val">91%</div>
+                </div>
+                <div class="group avgCons">
+                    <div class="title">avg consistency</div>
+                    <div class="val">71%</div>
+                </div>
+                <div class="group avgCons10">
+                    <div class="title">avg consistency<br>(last 10 tests)</div>
+                    <div class="val">66%</div>
+                </div>
+            </div>
+            <div class="group aboveHistory">
+                <div class="button exportCSV"><i class="fas fa-file-csv"></i> Export CSV</div>
+            </div>
+            <div class="group history">
+                <table width="100%">
+                    <thead>
+                        <tr>
+                            <td></td>
+                            <td type="button" class="sortable history-wpm-header">wpm</td>
+                            <td type="button" class="sortable history-raw-header">raw</td>
+                            <td type="button" class="sortable history-acc-header">accuracy</td>
+                            <td type="button" class="sortable history-consistency-header">consistency</td>
+                            <td aria-label="correct/incorrect/extra/missed" data-balloon-pos="up">chars</td>
+                            <td>mode</td>
+                            <td>info</td>
+                            <td>tags</td>
+                            <td type="button" class="sortable history-date-header">
+                                date <i class="fas fa-sort-down"
+                                        aria-hidden="true"></i>
+                            </td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="resultRow" id="result-0">
+                            <td></td>
+                            <td>122.57</td>
+                            <td>122.57</td>
+                            <td>100.00%</td>
+                            <td>60.89%</td>
+                            <td>45/0/0/0</td>
+                            <td>words 10</td>
+                            <td class="infoIcons">
+                                <span aria-label="english" data-balloon-pos="up">
+                                    <i class="fas fa-fw fa-globe-americas"></i>
+                                </span><span aria-label="normal"
+                                             data-balloon-pos="up"><i class="far fa-fw fa-star"></i></span><span class="miniResultChartButton" aria-label="View graph" data-balloon-pos="up"
+                                                                                                                 filteredresultsid="0" style="opacity: 1"><i class="fas fa-chart-line"></i></span>
+                            </td>
+                            <td>
+                                <span id="resultEditTags" resultid="656e12347275ef81405bd23b" tags="[]"
+                                      aria-label="no tags" data-balloon-pos="up" style="opacity: .25">
+                                    <i class="fas fa-fw fa-tag"></i>
+                                </span>
+                            </td>
+                            <td>
+                                04 Dec 2023<br>
+                                18:53
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div class="loadMoreButton">load more</div>
+            </div>
+        </div>
+    </div>
+</main>

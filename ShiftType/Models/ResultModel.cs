@@ -8,7 +8,7 @@
         public bool? IsNumbers { get; set; }
         public bool? IsSymbols { get; set; }
         public string? Language { get; set; }
-        public int? TimeSpent { get; set; }
+        public double? TimeSpent { get; set; }
         public TestTypes Type { get; set; }
     }
 }

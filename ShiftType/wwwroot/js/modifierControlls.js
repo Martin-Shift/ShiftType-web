@@ -17,12 +17,14 @@
 document.getElementById('timeSwitch').addEventListener('click', () => {
     const timeConfig = 15; // Replace this value with your logic
     const modifiers = createModifiers(0, { TimeAmount: timeConfig });
+    resetTest();
     getTest(modifiers);
 });
 
 document.getElementById('wordSwitch').addEventListener('click', () => {
     const wordCount = 10;
     const modifiers = createModifiers(1, { WordCount: wordCount });
+    resetTest();
     getTest(modifiers);
 });
 
@@ -35,6 +37,7 @@ document.getElementById('quoteSwitch').addEventListener('click', () => {
     }
 
     const modifiers = createModifiers(2, { QuoteType: quoteType });
+    resetTest();
     getTest(modifiers);
 });
 const timeConfigButtons = document.querySelectorAll('.time .textButton');
@@ -42,6 +45,7 @@ timeConfigButtons.forEach((button) => {
     button.addEventListener('click', () => {
         const timeConfig = parseInt(button.getAttribute('timeconfig'));
         const modifiers = createModifiers(0, { TimeAmount: timeConfig });
+        resetTest();
         getTest(modifiers);
     });
 });
@@ -51,7 +55,9 @@ wordCountButtons.forEach((button) => {
     button.addEventListener('click', () => {
         const wordCount = parseInt(button.getAttribute('wordcount'));
         const modifiers = createModifiers(1, { WordCount: wordCount });
+        resetTest();
         getTest(modifiers);
+        document.getElementById('time-remaining').innerText = globalModifiers.TimeAmount;
     });
 });
 
@@ -60,6 +66,7 @@ quoteLengthButtons.forEach((button) => {
     button.addEventListener('click', () => {
         const quoteType = parseInt(button.getAttribute('quotelength'));
         const modifiers = createModifiers(2, { QuoteType: quoteType });
+        resetTest();
         getTest(modifiers);
     });
 });
@@ -84,7 +91,9 @@ function getTest(modifiers) {
 
             // Add a space character at the end of each word
             wordsArray = wordsArray.map(word => word + ' ');
-            words = [...wordsArray]; 
+            wordsArray.pop();
+            wordsArray[wordsArray.length - 1] = wordsArray[wordsArray.length - 1].slice(0, -1);
+            words = [...wordsArray];
             const wordsContainer = document.querySelector('#words');
             wordsContainer.innerHTML = '';
             wordsArray.forEach(word => {
@@ -101,7 +110,6 @@ function getTest(modifiers) {
             });
             globalModifiers = modifiers;
 
-            document.getElementById('time-remaining').innerText = globalModifiers.TimeAmount;
         })
         .catch(error => {
             console.error('There was a problem with the fetch operation:', error.message);

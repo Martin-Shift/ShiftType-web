@@ -114,7 +114,7 @@ namespace ShiftType.Controllers
                 if (result.Succeeded)
                 {
                     var login = await _signInManager.PasswordSignInAsync(request.Email, request.Password, true, lockoutOnFailure: false);
-                    return RedirectToAction("Index","Type");
+                    return Ok(new { Message="Success" });
                 }
 
                 // Handle other registration errors

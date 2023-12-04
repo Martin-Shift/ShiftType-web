@@ -35,11 +35,14 @@
         public int Errors { get; set; }
 
         /// <summary>
-        /// Time Spent on a test
+        /// Seconds Spent on a test 
         /// </summary>
         public double TimeSpent { get; set; }
 
 
-
+        /// <summary>
+        /// Date When the test was written
+        /// </summary>
+        public DateTime Date { get; set; }
     }
 }

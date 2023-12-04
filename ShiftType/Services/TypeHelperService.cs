@@ -15,7 +15,7 @@ public static class TypeHelperService
         }
         return errors;
     }
-    public static int CountWPM(string input, string check, int SecondsSpent)
+    public static int CountWPM(string input, string check, double SecondsSpent)
     {
         var errors = CountErrors(input, check);
            var MinutesTyped = (double)SecondsSpent / 60;

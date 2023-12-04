@@ -112,7 +112,7 @@
         </main>
 
 <script src="~/js/site.js"></script>
-<script src="~/js/modifierControlls.js?v=7"></script>
+<script src="~/js/modifierControlls.js?v=9"></script>
 <script>
     // Initialization
     let currentWordIndex = 0;
@@ -125,8 +125,9 @@
     let previousLetterPos = 0;
     let timer;
     let globalModifiers = null;
+    let wordStopwatch;
 let timeRemaining;
-
+let timeSpent = 0;
 // Function to start the timer
 function startTimer() {
         timeRemaining = globalModifiers.TimeAmount;
@@ -221,9 +222,7 @@ function startTimer() {
        wordsArray = [];
        previousLetterPos = 0;
        lineEndIndex = 0;
-       testSeconds= [];
-        getTest(globalModifiers);
-       
+       testSeconds= [];       
        
     }
 
@@ -235,6 +234,10 @@ function startTimer() {
             typedLetters.push(event.key);
             if (globalModifiers.TimeAmount != null && timer === undefined) {
                 startTimer();
+            }
+
+            if (document.getElementById('wordSwitch').classList.contains('active') && wordStopwatch === undefined) {
+                startWordStopwatch();
             }
             const letterElement = document.querySelector(`.word:nth-child(${currentWordIndex + 1}) > letter:nth-child(${currentLetterIndex + 1})`);
 
@@ -299,12 +302,16 @@ function startTimer() {
         }
         else if (event.key === 'Escape'){
             resetTest();
+            getTest(globalModifiers);
         }
         else if (event.key.length === 1 && /[a-zA-Z]/.test(event.key)) {
             if (currentLetterIndex < currentWord.length - 1) {
                 const letterElement = document.querySelector(`.word:nth-child(${currentWordIndex + 1}) > letter:nth-child(${currentLetterIndex + 1})`);
                 if (globalModifiers.TimeAmount != null && timer === undefined) {
                     startTimer();
+                }
+                if (document.getElementById('wordSwitch').classList.contains('active') && wordStopwatch === undefined) {
+                    startWordStopwatch();
                 }
                 if (letterElement) {
                     typedLetters.push(event.key);
@@ -321,7 +328,57 @@ function startTimer() {
         //  updateCaretPosition(currentWordIndex,currentLetterIndex);
     });
 
-    
+    // Function to start the word stopwatch
+    function startWordStopwatch() {
+        wordStopwatch = setInterval(() => {
+            timeSpent += 40;
+
+            if(timeSpent%1000===0)
+            {
+                testSeconds.push([...typedLetters]);
+            }
+            console.log(typedLetters.length);
+            console.log(words.join('').length);
+            if (typedLetters.length === words.join('').length) {
+                clearInterval(wordStopwatch); 
+                testSeconds.push([...typedLetters]);
+                const data = {
+                    TypedText: typedLetters,
+                    OriginalText: words,
+                    IsNumbers: false,
+                    IsSymbols: false,
+                    TypedSeconds: testSeconds,
+                    Language: document.getElementById('language').textContent,
+                    TimeSpent: timeSpent/1000,
+                        Type: 1,
+                };
+
+                // Send a POST request to "type/submit" with the data
+                fetch('type/submit', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(data),
+                })
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Network response was not ok.');
+                        }
+                        return response.json();
+                    })
+                    .then(result => {
+                        console.log(result);
+                        window.location.href = `type/results/${result}`;
+                    })
+                    .catch(error => {
+                        // Handle errors here
+                        console.error('There was a problem with the submission:', error);
+                    });
+            }
+        }, 40); 
+    }
+
      getTest(createModifiers(0,{TimeAmount:15}));
 
 </script>

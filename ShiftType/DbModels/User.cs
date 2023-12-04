@@ -13,6 +13,7 @@ namespace ShiftType.DbModels
         public int Level { get; set; }
         public int Exp { get; set; }
         public virtual ImageFile? Logo { get; set; }
+        public string Description { get; set; }
         public string VisibleName { get; set; }
         public virtual ICollection<Result> Results { get; set; }
         [InverseProperty(nameof(Quote.Publisher))]

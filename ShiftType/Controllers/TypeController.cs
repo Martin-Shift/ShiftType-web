@@ -73,27 +73,24 @@ namespace ShiftType.Controllers
             result.TypedText = input;
             result.Text = check;
             result.TestType = (int)resultModel.Type;
-            
-            switch (resultModel.Type)
+
+            result.Wpm = TypeHelperService.CountWPM(input,check, (double)resultModel.TimeSpent);
+            result.TimeSpent = (double)resultModel.TimeSpent;
+
+            var wordsArr = resultModel.TypedSeconds.Select(x => string.Join("", x)).ToArray();
+            List<int> wpm = new() { };
+            for (int i = 0; i < wordsArr.Length; i++)
             {
-                case TestTypes.Time:
-                    result.Wpm = TypeHelperService.CountWPM(input, check, (int)resultModel.TimeSpent);
-                    var wordsArr = resultModel.TypedSeconds.Select(x=> string.Join("", x)).ToArray();
-                    List<int> wpm = new() { };
-                    for(int i=0;i<wordsArr.Length;i++)
-                    {
-                        wpm.Add(TypeHelperService.CountWPM(wordsArr[i],check,i+1));
-                    }
-                    result.TypedSeconds = JsonSerializer.Serialize(wpm);
-                    result.Errors = TypeHelperService.CountErrors(input, check);
-                    break;
+                wpm.Add(TypeHelperService.CountWPM(wordsArr[i], check, i + 1));
             }
-           if(User.Identity.IsAuthenticated)
+            result.TypedSeconds = JsonSerializer.Serialize(wpm);
+            result.Errors = TypeHelperService.CountErrors(input, check);
+            if (User.Identity.IsAuthenticated)
             {
                 var user = await _userManager.GetUserAsync(User);
                 result.User = user;
-               
-                UserLevelService.AddExp(user,(result.TypedText.Length - TypeHelperService.CountErrors(input,check)) / 3);
+
+                UserLevelService.AddExp(user, (result.TypedText.Length - result.Errors) / 3);
             }
             _context.Results.Add(result);
             _context.SaveChanges();
