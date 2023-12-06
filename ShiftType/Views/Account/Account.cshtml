@@ -1,0 +1,599 @@
+﻿@using ShiftType.Models;
+@using ShiftType.DbModels;
+@using ShiftType.Services;
+@using System.Text.Json;
+@{
+    Layout = "_Layout";
+    var last10Tests = @Model.Results.Skip(Model.Results.Count - 10).Take(10).ToList();
+}
+
+@model Profile
+
+<main style="height:100%" class="">
+    <div class="page pageAccount active" id="pageAccount" style="opacity: 1; height: unset;">
+        <div class="scrollToTopButton invisible"><i class="fas fa-angle-double-up"></i></div>
+        <div class="preloader hidden" style="opacity: 0;">
+            <div class="icon"><i class="fas fa-fw fa-spin fa-circle-notch"></i></div>
+            <div class="barWrapper hidden">
+                <div class="bar">
+                    <div class="fill" style="width: 100%;"></div>
+                </div>
+                <div class="text">Displaying stats...</div>
+            </div>
+        </div>
+        <div class="content" style="opacity: 1;">
+            <div class="miniResultChartWrapper">
+                <canvas id="miniResultChart"
+                        style="display: block; box-sizing: border-box; height: 0px; width: 0px;" height="0"
+                        width="0"></canvas>
+            </div>
+            <div class="miniResultChartBg"></div>
+            <div class="profile" uid="" name="@Model.Name">
+                <div class="details both">
+                    <div class="avatarAndName">
+                        <div class="avatars">
+                            <div class="placeholderAvatar" ><img style="border-radius:50%; width:80px; height:80px;" src="@("https://localhost:7228/" + @Model.ImageUrl)"></div>
+                            <div class="avatar"></div>
+                        </div>
+                        <div>
+                            <div class="name" style="font-size: 32px;">@Model.Name</div>
+                            <div class="badges">
+                                @if(Model.Badge != null){
+                                    <div class="badge" aria-label="Yes, I'm actually this fast" data-balloon-pos="right" style="color: @Model.Badge.Color;">
+                                        <i class="fas  @Model.Badge.FaIcon"></i>
+                                        <div class="text">@Model.Badge.Name</div>
+                                    </div>
+                                }
+                            </div>
+                            <div class="allBadges"></div>
+                            <div class="joined" data-balloon-pos="up" aria-label="674 days ago">Joined @Model.CreatedAt</div>
+                            <div class="streak" data-balloon-pos="up" data-balloon-length="large" aria-label="
+                                 Claimed today: yes
+                                 Come back in: 6 hours
+                                 If the streak reset time doesn't line up with your timezone, you can change it in Settings>
+                                Danger zone > Update streak hour offset." data-balloon-break="">
+                            </div>
+                        </div>
+                        <div class="levelAndBar">
+                            <div class="level" data-balloon-pos="up" aria-label="208.8k total xp">@Model.Level</div>
+                            <div class="xpBar">
+                                <div class="bar" style="width: @((((double)Model.Exp/UserLevelService.GetNextLevelExp(Model.Level))*100).ToString().Replace(",","."))%;"></div>
+                            </div>
+                            <div class="xp" data-balloon-pos="up" aria-label="976 xp until next level">@Model.Exp/@UserLevelService.GetNextLevelExp(Model.Level)</div>
+                        </div>
+                    </div>
+                    <div class="separator sep1"></div>
+                    <div class="typingStats vertical">
+                        <div class="started">
+                            <div class="title">tests completed</div>
+                            <div class="value">@Model.TestsCompleted</div>
+                        </div>
+                        <div class="timeTyping">
+                            <div class="title">time typing</div>
+                            <div class="value">@Model.TotalTimeTyped.ToString(@"hh\:mm\:ss")</div>
+                        </div>
+                    </div>
+                    <div class="separator sep2"></div>
+                    <div class="bioAndKeyboard">
+                        <div class="bio">
+                            <div class="title">bio</div>
+                            <div class="value">
+                                @Model.Description
+                            </div>
+                        </div>
+                        <div class="keyboard">
+                            <div class="title"></div>
+                            <div class="value">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="separator sep3"></div>
+
+                    <div class="buttonGroup">
+                        <button id="editProfileButton" class="editProfileButton" data-balloon-pos="left" aria-label="Edit profile" role="button">
+                            <i class="fas fa-pen"></i>
+                        </button>
+                        <button class="copyLink button" onclick="copylink()" data-balloon-pos="left" aria-label="Copy public link" role="button">
+                            <i class="fas fa-link"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="leaderboardsPositions">
+                    <div class="title">All-Time English Leaderboards</div>
+                    <div class="group t15">
+                        <div class="testType">15 seconds</div>
+                        <div class="pos">@(Model.LeaderBoard15S)th</div>
+                    </div>
+                    <div class="group t60">
+                        <div class="testType">60 seconds</div>
+                        <div class="pos">@(Model.LeaderBoard15S)th</div>
+                    </div>
+                </div>
+                <div class="pbsTime">
+                    <div class="group">
+                        <div class="quick">
+                            <div class="test">15 seconds</div>
+                            <div class="wpm">@Model.Best15SResult.Wpm</div>
+                            <div class="acc">@(Model.Best15SResult?.Accuracy)%</div>
+                        </div>
+                    </div>
+
+                    <div class="group">
+                        <div class="quick">
+                            <div class="test">30 seconds</div>
+                            <div class="wpm">@Model.Best30SResult?.Wpm</div>
+                            <div class="acc">@(Model.Best30SResult?.Accuracy)%</div>
+                        </div>
+                    </div>
+
+                    <div class="group">
+                        <div class="quick">
+                            <div class="test">60 seconds</div>
+                            <div class="wpm">@Model.Best60SResult.Wpm</div>
+                            <div class="acc">@(Model.Best60SResult.Accuracy)%</div>
+                        </div>
+                    </div>
+
+                    <div class="group">
+                        <div class="quick">
+                            <div class="test">120 seconds</div>
+                            <div class="wpm">@Model.Best120SResult.Wpm</div>
+                            <div class="acc">@(Model.Best120SResult.Accuracy)%</div>
+                        </div>
+                    </div>
+                    <div class="buttonGroup">
+                        <button class="showAllButton" data-balloon-pos="left" aria-label="Show all personal bests">
+                            <i class="fas fa-ellipsis-v"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="pbsWords">
+                    <div class="group">
+                        <div class="quick">
+                            <div class="test">10 words</div>
+                            <div class="wpm">@Model.Best10WordsResult.Wpm</div>
+                            <div class="acc">@(Model.Best10WordsResult.Accuracy)%</div>
+                        </div>
+                    </div>
+
+                    <div class="group">
+                        <div class="quick">
+                            <div class="test">25 words</div>
+                            <div class="wpm">@Model.Best25WordsResult.Wpm</div>
+                            <div class="acc">@(Model.Best25WordsResult.Accuracy)%</div>
+                        </div>
+                    </div>
+
+                    <div class="group">
+                        <div class="quick">
+                            <div class="test">50 words</div>
+                            <div class="wpm">@Model.Best50WordsResult.Wpm</div>
+                            <div class="acc">@(Model.Best50WordsResult.Accuracy)%</div>
+                        </div>
+                    </div>
+
+                    <div class="group">
+                        <div class="quick">
+                            <div class="test">100 words</div>
+                            <div class="wpm">@Model.Best100WordsResult.Wpm</div>
+                            <div class="acc">@(Model.Best100WordsResult.Accuracy)%</div>
+                        </div>
+                    </div>
+                    <div class="buttonGroup">
+                        <button class="showAllButton" data-balloon-pos="left" aria-label="Show all personal bests">
+                            <i class="fas fa-ellipsis-v"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="group noDataError hidden">No data found. Check your filters.</div>
+            <div class="group chart">
+                <div class="chart">
+                    <canvas id="accountHistoryChart"
+                            style="display: block; box-sizing: border-box; height: 400px; width: 636.8px;" height="500"
+                            width="796"></canvas>
+                </div>
+            </div>
+            <div class="group histogramChart">
+                <div class="chart" style="height:200px">
+                    <canvas id="accountHistogramChart"
+                            style="display: block; box-sizing: border-box; height: 200px; width: 636.8px;" height="250"
+                            width="796"></canvas>
+                </div>
+            </div>
+            <div class="group dailyActivityChart">
+                <div class="chart" style="height:200px">
+                    <canvas id="accountActivityChart"
+                            style="display: block; box-sizing: border-box; height: 200px; width: 636.8px;" height="250"
+                            width="796"></canvas>
+                </div>
+            </div>
+            <div class="group estimatedWordsTyped">
+                <div class="title">estimated words typed</div>
+                <div class="val">@Model.WordsTyped</div>
+            </div>
+            <div class="triplegroup stats">
+                <div class="group testsStarted">
+                    <div class="title">tests started</div>
+                    <div class="val">@Model.TestsCompleted</div>
+                </div>
+                <div class="group testsCompleted">
+                    <div class="title">
+                        tests completed <span data-balloon-length="xlarge" data-balloon-pos="up"
+                                              aria-label="Due to the increasing number of results in the database, you can now only see your last 1000 results in detail. Total time spent typing, started and completed tests stats will still be up to date at the top of the page, above the filters."
+                                              role="alertdialog"><i class="fas fa-question-circle"></i></span>
+                    </div>
+                    <div class="val">@Model.TestsCompleted</div>
+                </div>
+                <div class="group timeTotalFiltered">
+                    <div class="title">time typing</div>
+                    <div class="val">@Model.TotalTimeTyped.ToString(@"hh\:mm\:ss")</div>
+                </div>
+                <div class="group highestWpm">
+                    <div class="title">highest wpm</div>
+                    <div class="val">@Model.BestResult.Wpm</div>
+                </div>
+                <div class="group averageWpm">
+                    <div class="title">average wpm</div>
+                    <div class="val">@ResultProviderService.AverageBy(Model.Results,x=> x.Wpm)</div>
+                </div>
+                <div class="group averageWpm10">
+                    <div class="title">average wpm (last 10 tests)</div>
+                    <div class="val">@ResultProviderService.AverageBy(last10Tests,x=> x.Wpm)</div>
+                </div>
+                <div class="group highestRaw">
+                    <div class="title">highest raw wpm</div>
+                    <div class="val">@(Model.BestResult?.Wpm + Model.BestResult?.Errors)</div>
+                    <div class="mode"></div>
+                </div>
+                <div class="group averageRaw">
+                    <div class="title">average raw wpm</div>
+                    <div class="val">@(@ResultProviderService.AverageBy(Model.Results, x => x.Wpm) + @ResultProviderService.AverageBy(Model.Results, x => x.Errors))</div>
+                </div>
+                <div class="group averageRaw10">
+                    <div class="title">average raw wpm (last 10 tests)</div>
+                    <div class="val">@(@ResultProviderService.AverageBy(last10Tests, x => x.Wpm) + @ResultProviderService.AverageBy(last10Tests, x => x.Errors))</div>
+                </div>
+                <div class="group highestAcc">
+                    <div class="title">highest accuracy</div>
+                    <div class="val">@ResultProviderService.MaxBy(Model.Results, x => x.Accuracy)%</div>
+                </div>
+                <div class="group avgAcc">
+                    <div class="title">avg accuracy</div>
+                    <div class="val">@ResultProviderService.AverageBy(Model.Results, x => x.Accuracy)%</div>
+                </div>
+                <div class="group avgAcc10">
+                    <div class="title">avg accuracy (last 10 tests)</div>
+                    <div class="val">@ResultProviderService.AverageBy(last10Tests, x => x.Accuracy)%</div>
+                </div>
+                <div class="group highestCons">
+                    <div class="title">highest consistency</div>
+                    <div class="val">@ResultProviderService.MaxBy(Model.Results, x => x.Consistency)%</div>
+                </div>
+                <div class="group avgCons">
+                    <div class="title">avg consistency</div>
+                    <div class="val">@ResultProviderService.AverageBy(Model.Results, x => x.Consistency)%</div>
+                </div>
+                <div class="group avgCons10">
+                    <div class="title">avg consistency (last 10 tests)</div>
+                    <div class="val">@ResultProviderService.AverageBy(last10Tests, x => x.Consistency)%</div>
+                </div>
+            </div>
+            <div class="group aboveHistory">
+                <div class="button exportCSV"><i class="fas fa-file-csv"></i> Export CSV</div>
+            </div>
+            <div class="group history">
+                <table width="100%">
+                    <thead>
+                        <tr>
+                            <td></td>
+                            <td type="button" class="sortable history-wpm-header">wpm</td>
+                            <td type="button" class="sortable history-raw-header">raw</td>
+                            <td type="button" class="sortable history-acc-header">accuracy</td>
+                            <td type="button" class="sortable history-consistency-header">consistency</td>
+                            <td aria-label="correct/incorrect/extra/missed" data-balloon-pos="up">chars</td>
+                            <td>mode</td>
+                            <td>info</td>
+                            <td>tags</td>
+                            <td type="button" class="sortable history-date-header">
+                                date <i class="fas fa-sort-down"
+                                        aria-hidden="true"></i>
+                            </td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var result in Model.Results.Take(9))
+                        {
+                            <tr class="resultRow" id="result-0">
+                                <td></td>
+                                <td>@result.Wpm</td>
+                                <td>@(result.Wpm + result.Errors)</td>
+                                <td>@(result.Accuracy)%</td>
+                                <td>@(result.Consistency)%</td>
+                                <td>@(result.Text.Length)/@(result.Errors)/0/0</td>
+                                <td>@((TestTypes)(result.TestType))</td>
+                                <td class="infoIcons">
+                                    <span aria-label="english" data-balloon-pos="up">
+                                        <i class="fas fa-fw fa-globe-americas"></i>
+                                    </span><span aria-label="normal"
+                                                 data-balloon-pos="up"><i class="far fa-fw fa-star"></i></span><span class="miniResultChartButton" aria-label="View graph" data-balloon-pos="up"
+                                                                                                                     filteredresultsid="0" style="opacity: 1"><i class="fas fa-chart-line"></i></span>
+                                </td>
+                                <td>
+                                    <span id="resultEditTags" resultid="656e12347275ef81405bd23b" tags="[]"
+                                          aria-label="no tags" data-balloon-pos="up" style="opacity: .25">
+                                        <i class="fas fa-fw fa-tag"></i>
+                                    </span>
+                                </td>
+                                <td>
+                                    @result.Date
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+                <div class="loadMoreButton">load more</div>
+            </div>
+        </div>
+    </div>
+</main>
+<div id="popups">
+    <div id="editProfilePopupWrapper" class="popupWrapper" tabindex="-1" style="opacity: 1; display:none;">
+        <div id="editProfilePopup">
+            <div class="title">Edit Profile</div>
+            <div><label>Name</label> <input class="website" value="@Model.Name" name="Name"></div>
+            <div><label>description</label> <textarea class="bio" type="text" autocomplete="off" name="Description">@Model.Description</textarea></div>
+            <div><label>Avatar</label> <input class="website" value="" name="Image" type="file"></div>
+            <div>
+                <label>badge</label>
+                @Html.Partial("Partials/_BadgeListPartial",Model)
+            </div><button class="edit-profile-submit" id="submitEdit">save</button>
+        </div>
+    </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/canvasjs/1.7.0/canvasjs.min.js" integrity="sha512-FJ2OYvUIXUqCcPf1stu+oTBlhn54W0UisZB/TNrZaVMHHhYvLBV9jMbvJYtvDe5x/WVaoXZ6KB+Uqe5hT2vlyA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+@section scripts{
+
+}
+<script>
+
+    function copylink()
+    {
+        var copyText = window.location.href;
+
+        // Copy the selected text to the clipboard
+        document.execCommand("copy");
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+        // Function to handle form submission
+        function handleSubmit(event) {
+            event.preventDefault(); // Prevent default form submission
+
+            // Create a new FormData object
+            var formData = new FormData();
+
+            // Get the form elements by their names and add them to the formData
+            var formElements = document.querySelectorAll('#editProfilePopup [name]');
+            formElements.forEach(function (element) {
+                if (element.type === 'file') {
+                    formData.append(element.name, element.files[0]); // For file inputs
+                } else {
+                    formData.append(element.name, element.value); // For other inputs
+                }
+            });
+
+            // For the badgeSelectionContainer - extract the selected badge value
+            var selectedBadge = document.querySelector('.badgeSelectionItem.selected');
+            if (selectedBadge) {
+                formData.append('BadgeId', selectedBadge.getAttribute('value'));
+            }
+
+            fetch('/profile/edit', {
+                method: 'POST',
+                body: formData
+            })
+                .then(response => {
+                    if (response.ok) {
+                        // Optionally, perform actions upon successful submission
+                        console.log('Form data submitted successfully');
+                        // Close the popup or perform other actions
+                        document.getElementById('editProfilePopupWrapper').style.display = 'none';
+                    } else {
+                        // Handle errors or failed submission
+                        console.error('Error submitting form data');
+                    }
+                })
+                .catch(error => {
+                    // Handle fetch errors
+                    console.error('Fetch error:', error);
+                });
+        }
+
+        // Attach a click event listener to the save button
+        document.getElementById('submitEdit').addEventListener('click', handleSubmit);
+    });
+
+
+    var chart = JSON.parse(`@Html.Raw(JsonSerializer.Serialize(Model.WpmChart))`);
+    var ctx = document.getElementById('accountHistoryChart').getContext('2d');
+    var labels = [];
+    for (let i = 0; i < chart.length; i++) {
+        labels.push("");
+    }
+    var chartData = {
+        labels: labels,
+        datasets: [{
+            label: 'wpm',
+            backgroundColor: '#191919',
+            borderColor: '#007acc',
+            borderWidth: 1,
+            data: chart,
+
+        }]
+    };
+
+    var chartOptions = {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+            y: {
+                beginAtZero: true
+            }
+        },
+        plugins: {
+            legend: {
+                display: false // Hide the legend
+            }
+        },
+        tooltips: {
+            enabled: false
+        },
+        scales: {
+            x: {
+                display: false
+            }
+        }
+    };
+
+    var myChart = new Chart(ctx, {
+        type: 'line',
+        data: chartData,
+        options: chartOptions
+    });
+
+    console.log(chart);
+
+    var wordsChart = JSON.parse(`@Html.Raw(JsonSerializer.Serialize(Model.TestBracketsChart))`);
+    var wordsLabels = JSON.parse(`@Html.Raw(JsonSerializer.Serialize(Model.TestBracketsChartLabels))`);
+    var wordsCtx = document.getElementById('accountHistogramChart').getContext('2d');
+    console.log(wordsChart);
+    console.log(wordsLabels);
+    var wordschartData = {
+        labels: wordsLabels,
+        datasets: [{
+            label: 'Tests',
+            backgroundColor: '#007acc',
+            borderColor: '#1e1e1e',
+            borderWidth: 10,
+            data: wordsChart,
+            barThickness: 80,
+            barPercentage: 0.6,
+            categoryPercentage: 0.8,
+        }]
+    };
+
+    var wordschartOptions = {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+            y: {
+                beginAtZero: true
+            }
+        },
+        plugins: {
+            legend: {
+                display: false // Hide the legend
+            }
+        },
+        tooltips: {
+            enabled: false
+        },
+        scales: {
+            x: {
+                display: false
+            }
+        }
+
+    };
+
+    var timeChart = new Chart(wordsCtx, {
+        type: 'bar',
+        data: wordschartData,
+        options: wordschartOptions
+    });
+
+
+
+
+    var timeChart = JSON.parse(`@Html.Raw(JsonSerializer.Serialize(Model.TimeTypedChart))`);
+    var timeLabels = JSON.parse(`@Html.Raw(JsonSerializer.Serialize(Model.TimeTypedChartLabels))`);
+    var timeCtx = document.getElementById('accountActivityChart').getContext('2d');
+    console.log(timeChart);
+    console.log(timeLabels);
+    var timechartData = {
+        labels: timeLabels,
+        datasets: [{
+            label: 'Time',
+            backgroundColor: '#191919',
+            borderColor: '#007acc',
+            borderWidth: 1,
+            data: timeChart,
+            barThickness: 5,
+        }]
+    };
+
+    var timechartOptions = {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+            y: {
+                beginAtZero: true
+            }
+        },
+        plugins: {
+            legend: {
+                display: false // Hide the legend
+            }
+        },
+        tooltips: {
+            enabled: false
+        },
+        scales: {
+            x: {
+                display: false
+            }
+        }
+    };
+
+    var timeChart = new Chart(timeCtx, {
+        type: 'bar',
+        data: timechartData,
+        options: timechartOptions
+    });
+
+    console.log(chart);
+
+    // Get the button element by its ID
+    const openEditProfileButton = document.getElementById('editProfileButton');
+
+    // Get the popup wrapper and form elements
+    const editProfilePopupWrapper = document.getElementById('editProfilePopupWrapper');
+    const editProfileForm = document.getElementById('editProfilePopup');
+
+    // Attach a click event listener to the button
+    openEditProfileButton.addEventListener('click', function (event) {
+        event.preventDefault();
+
+        // Show the edit profile popup
+        editProfilePopupWrapper.style.display = 'flex'; 
+        editProfilePopupWrapper.focus(); 
+    });
+
+    // Optional: Close the popup when the user clicks outside the form
+    editProfilePopupWrapper.addEventListener('click', function (event) {
+        if (event.target === editProfilePopupWrapper) {
+            editProfilePopupWrapper.style.display = 'none'; 
+        }
+    });
+
+    // Optional: Close the popup when the 'ESC' key is pressed
+    document.addEventListener('keydown', function (event) {
+        if (event.key === 'Escape' || event.keyCode === 27) {
+            editProfilePopupWrapper.style.display = 'none'; 
+        }
+    });
+
+</script>

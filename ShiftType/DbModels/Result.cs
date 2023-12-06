@@ -1,4 +1,9 @@
-﻿namespace ShiftType.DbModels
+﻿using ShiftType.Migrations;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json;
+using System.Text.Json.Serialization;
+
+namespace ShiftType.DbModels
 {
     public class Result
     {
@@ -44,5 +49,18 @@
         /// Date When the test was written
         /// </summary>
         public DateTime Date { get; set; }
+
+
+        [NotMapped]
+        /// <summary>
+        /// Accuracy of the test
+        /// </summary>
+        public int Accuracy { get => (int)Math.Floor(((Wpm - Errors) / Math.Max(Wpm, 1)) * 100); }
+
+        [NotMapped]
+        /// <summary>
+        /// Differenct between max and min speeds of the test
+        /// </summary>
+        public int Consistency { get => (int)(((double)Math.Max(JsonSerializer.Deserialize<int[]>(TypedSeconds).Min(),1) / Math.Max(JsonSerializer.Deserialize<int[]>(TypedSeconds).Max(),1)) * 100); }
     }
 }

@@ -8,9 +8,9 @@ namespace ShiftType.Services
         public static string[] GetWords(string language)
         {
             var random = new Random();
-            var dir = AppDomain.CurrentDomain.BaseDirectory;
+            var dir = "D:\\Mein progectos\\ShiftType\\ShiftType\\bin\\debug\\net6.0\\";
             var path = $"Words/{language.Replace(" ", "_")}.json";
-            var text = System.IO.File.ReadAllText(AppDomain.CurrentDomain.BaseDirectory + path);
+            var text = System.IO.File.ReadAllText(dir + path);
             return JsonSerializer.Deserialize<string[]>(text);
         }
         public static string GetRandomQuote(string language, QuoteType quoteType)

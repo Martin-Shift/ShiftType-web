@@ -76,7 +76,7 @@
                 @if(User.Identity.IsAuthenticated && user != null)
                 {
                            
-                <a class="textButton account view-account" href="" onclick="this.blur()"
+                    <a class="textButton account view-account" href="/account/account" onclick="this.blur()"
                               router-link="" style="opacity: 1; pointer-events: auto;">
                     <div class="loading hidden" style="opacity: 0;">
                         <i class="fas fa-fw fa-spin fa-circle-notch"></i>
@@ -151,7 +151,7 @@
 </div>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-
+<script src="https://cdnjs.cloudflare.com/ajax/libs/canvasjs/1.7.0/canvasjs.min.js" integrity="sha512-FJ2OYvUIXUqCcPf1stu+oTBlhn54W0UisZB/TNrZaVMHHhYvLBV9jMbvJYtvDe5x/WVaoXZ6KB+Uqe5hT2vlyA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script>
         console.log(`@User.Identity.IsAuthenticated`);
         function gotoLogin()

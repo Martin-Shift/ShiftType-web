@@ -10,13 +10,15 @@ namespace ShiftType.Controllers
     {
         private readonly UserManager<User> _userManager;
         private readonly TypingDbContext _context;
-        public AccountController(UserManager<User> userManager,TypingDbContext context)
+        private readonly IWebHostEnvironment _webHostEnvironment;
+        public AccountController(UserManager<User> userManager,TypingDbContext context, IWebHostEnvironment webHostEnvironment)
         {
             _userManager = userManager;
             _context = context;
+            _webHostEnvironment = webHostEnvironment;
         }
-        [HttpGet("/profile/profile")]
-        public async Task<IActionResult> Profile()
+        [HttpGet("/account/account")]
+        public async Task<IActionResult> Account()
         {
         
             var user = await _userManager.GetUserAsync(User);
@@ -24,9 +26,17 @@ namespace ShiftType.Controllers
             return View(profile);
         }
         [HttpPost("/profile/edit")]
-        public IActionResult Edit() 
+        public async Task<IActionResult> Edit(ProfileEditModel model) 
         {
-
+            var user = await _userManager.GetUserAsync(User);
+            user.VisibleName = model.Name;
+            user.Description = model.Description;
+            if (model.Image != null)
+            {
+                ImageHelperService.Upload(model.Image, user, _context, _webHostEnvironment).Wait();
+            }
+            user.Badge = model.BadgeId == -1 ? null : _context.Badges.FirstOrDefault(x=> x.Id == model.BadgeId);
+           await  _context.SaveChangesAsync();
             return Ok();
         }
     }

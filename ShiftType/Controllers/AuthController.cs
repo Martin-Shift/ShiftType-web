@@ -108,7 +108,7 @@ namespace ShiftType.Controllers
                     return BadRequest(new { Errors = errors });
                 }
 
-                var user = new User { VisibleName = request.Login, UserName = request.Login, Email = request.Email };
+                var user = new User { VisibleName = request.Login, UserName = request.Login, Email = request.Email, Description = "", CreatedAt = DateTime.Now };
                 var result = await _userManager.CreateAsync(user, request.Password);
 
                 if (result.Succeeded)

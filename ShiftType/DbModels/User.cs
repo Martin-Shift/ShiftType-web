@@ -18,5 +18,7 @@ namespace ShiftType.DbModels
         public virtual ICollection<Result> Results { get; set; }
         [InverseProperty(nameof(Quote.Publisher))]
         public virtual ICollection<Quote> CreatedQuotes  { get; set; }
+        public DateTime CreatedAt { get; set; }
+        public Badge? Badge { get; set; }
     }
 }

@@ -85,6 +85,8 @@ namespace ShiftType.Controllers
             }
             result.TypedSeconds = JsonSerializer.Serialize(wpm);
             result.Errors = TypeHelperService.CountErrors(input, check);
+            result.Date = DateTime.Now;
+        
             if (User.Identity.IsAuthenticated)
             {
                 var user = await _userManager.GetUserAsync(User);

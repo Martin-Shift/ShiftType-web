@@ -19,6 +19,7 @@ document.getElementById('timeSwitch').addEventListener('click', () => {
     const modifiers = createModifiers(0, { TimeAmount: timeConfig });
     resetTest();
     getTest(modifiers);
+    document.getElementById('time-remaining').innerText = timeConfig;
 });
 
 document.getElementById('wordSwitch').addEventListener('click', () => {
@@ -47,6 +48,7 @@ timeConfigButtons.forEach((button) => {
         const modifiers = createModifiers(0, { TimeAmount: timeConfig });
         resetTest();
         getTest(modifiers);
+        document.getElementById('time-remaining').innerText = timeConfig;
     });
 });
 

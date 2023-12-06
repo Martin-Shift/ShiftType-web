@@ -112,7 +112,7 @@
         </main>
 
 <script src="~/js/site.js"></script>
-<script src="~/js/modifierControlls.js?v=9"></script>
+<script src="~/js/modifierControlls.js?v=10"></script>
 <script>
     // Initialization
     let currentWordIndex = 0;
@@ -213,6 +213,7 @@ function startTimer() {
     }
     function resetTest()
     {
+        clearInterval(wordStopwatch);
         clearInterval(timer); 
         currentWordIndex = 0;
         currentLetterIndex = 0;
@@ -222,8 +223,14 @@ function startTimer() {
        wordsArray = [];
        previousLetterPos = 0;
        lineEndIndex = 0;
-       testSeconds= [];       
-       
+       testSeconds= [];     
+       timeSpent = 0;
+       wordStopwatch = undefined;
+        document.getElementById('time-remaining').innerText = "";
+       if(globalModifiers.TimeAmount)
+       {
+            document.getElementById('time-remaining').innerText = globalModifiers.TimeAmount;
+       }
     }
 
     document.addEventListener('keydown', (event) => {
@@ -380,5 +387,5 @@ function startTimer() {
     }
 
      getTest(createModifiers(0,{TimeAmount:15}));
-
+    document.getElementById('time-remaining').innerText = 15;
 </script>

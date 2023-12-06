@@ -1,14 +1,17 @@
 ﻿@{
     Layout = "_Layout";
-    var accuracy = Math.Floor(((Model.Wpm - Model.Errors) / Model.Wpm) * 100);
     var typeSeconds = JsonSerializer.Deserialize<int[]>(Model.TypedSeconds);
     var consistency = (int)(((double)typeSeconds.Min() / typeSeconds.Max()) * 100);
 }
 @model Result;
 @using System.Text.Json;
 @using ShiftType.DbModels;
-<script src="https://cdnjs.cloudflare.com/ajax/libs/canvasjs/1.7.0/canvasjs.min.js" integrity="sha512-FJ2OYvUIXUqCcPf1stu+oTBlhn54W0UisZB/TNrZaVMHHhYvLBV9jMbvJYtvDe5x/WVaoXZ6KB+Uqe5hT2vlyA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+@section scripts{
+
+}
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/canvasjs/1.7.0/canvasjs.min.js" integrity="sha512-FJ2OYvUIXUqCcPf1stu+oTBlhn54W0UisZB/TNrZaVMHHhYvLBV9jMbvJYtvDe5x/WVaoXZ6KB+Uqe5hT2vlyA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <main style="height:100%" class="">
     <div class="page pageTest active" style="opacity: 1;">
         <div id="testConfig" class="invisible">
@@ -131,7 +134,7 @@
                 </div>
                 <div class="group acc">
                     <div class="top">acc</div>
-                    <div class="bottom" aria-label="97.14% (@(Model.TypedText.Length-Model.Errors) correct / @Model.Errors incorrect)" data-balloon-pos="up">@(accuracy)%</div>
+                    <div class="bottom" aria-label="97.14% (@(Model.TypedText.Length-Model.Errors) correct / @Model.Errors incorrect)" data-balloon-pos="up">@(Model.Accuracy)%</div>
                 </div>
             </div>
             <div class="stats morestats">

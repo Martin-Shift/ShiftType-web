@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ShiftType.DbModels;
 
@@ -10,9 +11,11 @@ using ShiftType.DbModels;
 namespace ShiftType.Migrations
 {
     [DbContext(typeof(TypingDbContext))]
-    partial class TypingDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231204221132_created-at")]
+    partial class createdat
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "7.0.14");
@@ -143,29 +146,6 @@ namespace ShiftType.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("ShiftType.DbModels.Badge", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("Color")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("FaIcon")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Badges");
-                });
-
             modelBuilder.Entity("ShiftType.DbModels.ImageFile", b =>
                 {
                     b.Property<int>("Id")
@@ -281,9 +261,6 @@ namespace ShiftType.Migrations
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int?>("BadgeId")
-                        .HasColumnType("INTEGER");
-
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
                         .HasColumnType("TEXT");
@@ -349,8 +326,6 @@ namespace ShiftType.Migrations
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("BadgeId");
 
                     b.HasIndex("LogoId");
 
@@ -456,15 +431,9 @@ namespace ShiftType.Migrations
 
             modelBuilder.Entity("ShiftType.DbModels.User", b =>
                 {
-                    b.HasOne("ShiftType.DbModels.Badge", "Badge")
-                        .WithMany()
-                        .HasForeignKey("BadgeId");
-
                     b.HasOne("ShiftType.DbModels.ImageFile", "Logo")
                         .WithMany()
                         .HasForeignKey("LogoId");
-
-                    b.Navigation("Badge");
 
                     b.Navigation("Logo");
                 });

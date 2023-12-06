@@ -1,0 +1,50 @@
+﻿@using ShiftType.Models;
+@using ShiftType.Services;
+@model Profile;
+
+<div class="badgeSelectionContainer" name="BadgeId">
+
+    <div class="badgeSelectionItem selected" value="-1">
+        <div class="badge">
+            <i class="fas fa-frown-open"></i>
+            <div class="text">none</div>
+        </div>
+    </div>
+
+    @if (ResultProviderService.AverageBy(Model.Results, x => x.Wpm) >= 100)
+    {
+        <div class="badgeSelectionItem" value="1">
+            <div class="badge" style="background-color:#d10000;">
+            <i class="fas fa-keyboard"></i>
+            <div class="text">typeMaster</div>
+        </div>
+         </div>
+    }
+    @if (Model.LeaderBoard15S == 1 || Model.LeaderBoard60S == 1)
+    {
+        <div class="badgeSelectionItem" value="2">
+            <div class="badge" style="color: white;animation: rgb-bg 10s linear infinite;">
+                <i class="fas fa-trophy"></i>
+                <div class="text">Champion</div>
+            </div>
+        </div>
+    }
+</div>
+<script>
+    function handleBadgeSelection(event) {
+        var selectedBadge = event.target.closest('.badgeSelectionItem');
+        if (selectedBadge) {
+            var allBadges = document.querySelectorAll('.badgeSelectionItem');
+            allBadges.forEach(function (badge) {
+                badge.classList.remove('selected');
+            });
+            selectedBadge.classList.add('selected');
+        }
+    }
+
+    // Attach click event listener to each badge item
+    var badgeItems = document.querySelectorAll('.badgeSelectionItem');
+    badgeItems.forEach(function (badge) {
+        badge.addEventListener('click', handleBadgeSelection);
+    });
+</script>

@@ -22,6 +22,7 @@ builder.Services.AddDbContext<TypingDbContext>(options =>
     SQLitePCL.raw.SetProvider(new SQLitePCL.SQLite3Provider_e_sqlite3());
     options.UseSqlite("Data Source=D:\\Mein progectos\\ShiftType\\ShiftType\\TypingDb.db");
 });
+
 //builder.Services.AddLocalization(options => options.ResourcesPath = "Resources");
 builder.Services.AddIdentity<User, IdentityRole<int>>(options =>
 {
