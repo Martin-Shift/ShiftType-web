@@ -5,10 +5,13 @@
 @{
     Layout = "_Layout";
     var last10Tests = @Model.Results.Skip(Model.Results.Count - 10).Take(10).ToList();
+    ViewData["Title"] = Model.Name + " - " + "Account"; 
 }
 
 @model Profile
-
+@section styles{
+    
+}
 <main style="height:100%" class="">
     <div class="page pageAccount active" id="pageAccount" style="opacity: 1; height: unset;">
         <div class="scrollToTopButton invisible"><i class="fas fa-angle-double-up"></i></div>
@@ -316,8 +319,9 @@
                                     <span aria-label="english" data-balloon-pos="up">
                                         <i class="fas fa-fw fa-globe-americas"></i>
                                     </span><span aria-label="normal"
-                                                 data-balloon-pos="up"><i class="far fa-fw fa-star"></i></span><span class="miniResultChartButton" aria-label="View graph" data-balloon-pos="up"
-                                                                                                                     filteredresultsid="0" style="opacity: 1"><i class="fas fa-chart-line"></i></span>
+                                                 data-balloon-pos="up"><i class="far fa-fw fa-star"></i></span>
+                                                 <a href="/type/results/@result.Id" class="miniResultChartButton" aria-label="View graph" data-balloon-pos="up"
+                                                 filteredresultsid="0" style="opacity: 1"><i class="fas fa-chart-line"></i></a>
                                 </td>
                                 <td>
                                     <span id="resultEditTags" resultid="656e12347275ef81405bd23b" tags="[]"
@@ -333,6 +337,9 @@
                     </tbody>
                 </table>
                 <div class="loadMoreButton">load more</div>
+            </div>
+            <div class="group aboveHistory">
+                <div onclick="exportExcel()" class="button exportCSV"><i class="fas fa-file-excel"></i> Export Excel</div>
             </div>
         </div>
     </div>
@@ -596,4 +603,21 @@
         }
     });
 
+    function exportExcel()
+    {
+        fetch('/Auth/SubmitLogin', {
+            method: 'POST',
+            body: JSON.stringify(loginData),
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+            .then(response => response.json())
+            .then(data => {
+                window.location.href = "/";
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+    }
 </script>

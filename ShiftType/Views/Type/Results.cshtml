@@ -2,6 +2,7 @@
     Layout = "_Layout";
     var typeSeconds = JsonSerializer.Deserialize<int[]>(Model.TypedSeconds);
     var consistency = (int)(((double)typeSeconds.Min() / typeSeconds.Max()) * 100);
+    ViewData["Title"] = "Results - ShiftType";
 }
 @model Result;
 @using System.Text.Json;
@@ -331,6 +332,13 @@
         type: 'line',
         data: chartData,
         options: chartOptions
+    });
+
+    document.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape') {
+            window.location.href="/";
+        }
+
     });
 
 </script>
