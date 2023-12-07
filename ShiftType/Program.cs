@@ -38,7 +38,7 @@ builder.Services.AddAuthentication()
 {
     options.ClientId = builder.Configuration["GoogleAuth:ClientId"];
 
-    options.ClientSecret = builder.Configuration["GoogleAuth:ClientId"];
+    options.ClientSecret = builder.Configuration["GoogleAuth:ClientSecret"];
 });
 builder.Services.AddControllersWithViews()
     .AddViewLocalization();

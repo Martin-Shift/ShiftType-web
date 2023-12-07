@@ -18,18 +18,18 @@ namespace ShiftType.Controllers
             _userManager = userManager;
         }
 
-        [HttpPost("GoogleLogin")]
+        [HttpPost("/google/login")]
         [AllowAnonymous]
-        public IActionResult GoogleLogin()
+        public IActionResult Login()
         {
-            var redirectUrl = Url.Action("GoogleLoginCallback", "Account", null, protocol: HttpContext.Request.Scheme);
+            var redirectUrl = Url.Action("Callback", "GoogleAuth", null, protocol: HttpContext.Request.Scheme);
             var properties = _signInManager.ConfigureExternalAuthenticationProperties("Google", redirectUrl);
             return Challenge(properties, "Google");
         }
 
-        [HttpGet("GoogleLoginCallback")]
+        [HttpGet("/google/callback")]
         [AllowAnonymous]
-        public async Task<IActionResult> GoogleLoginCallback()
+        public async Task<IActionResult> Callback()
         {
             var info = await _signInManager.GetExternalLoginInfoAsync();
             if (info == null)
@@ -54,7 +54,7 @@ namespace ShiftType.Controllers
             }
             await _signInManager.SignInAsync(user, isPersistent: false);
 
-            return RedirectToAction("Index", "Shop");
+            return RedirectToAction("Index", "Type");
         }
     }
 }
