@@ -5,6 +5,8 @@ using System;
 using System.Text.Json;
 using ShiftType.Services;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ShiftType.Controllers
 {
@@ -12,7 +14,7 @@ namespace ShiftType.Controllers
     {
         private readonly TypingDbContext _context;
         private readonly UserManager<User> _userManager;
-        public TypeController(TypingDbContext typingDbContext,UserManager<User> userManager)
+        public TypeController(TypingDbContext typingDbContext, UserManager<User> userManager)
         {
             _context = typingDbContext;
             _userManager = userManager;
@@ -26,7 +28,7 @@ namespace ShiftType.Controllers
         [HttpGet("type/results/{id}")]
         public IActionResult Results(int id)
         {
-           var result = _context.Results.First(x=> x.Id == id);
+            var result = _context.Results.First(x => x.Id == id);
 
             return View(result);
         }
@@ -67,14 +69,14 @@ namespace ShiftType.Controllers
         [HttpPost("type/submit")]
         public async Task<IActionResult> SubmitResult([FromBody] ResultModel resultModel)
         {
-            var result = new Result(); 
+            var result = new Result();
             var input = string.Join("", resultModel.TypedText);
             var check = string.Join("", resultModel.OriginalText);
             result.TypedText = input;
             result.Text = check;
             result.TestType = (int)resultModel.Type;
 
-            result.Wpm = TypeHelperService.CountWPM(input,check, (double)resultModel.TimeSpent);
+            result.Wpm = TypeHelperService.CountWPM(input, check, (double)resultModel.TimeSpent);
             result.TimeSpent = (double)resultModel.TimeSpent;
 
             var wordsArr = resultModel.TypedSeconds.Select(x => string.Join("", x)).ToArray();
@@ -86,7 +88,7 @@ namespace ShiftType.Controllers
             result.TypedSeconds = JsonSerializer.Serialize(wpm);
             result.Errors = TypeHelperService.CountErrors(input, check);
             result.Date = DateTime.Now;
-        
+
             if (User.Identity.IsAuthenticated)
             {
                 var user = await _userManager.GetUserAsync(User);
@@ -97,6 +99,30 @@ namespace ShiftType.Controllers
             _context.Results.Add(result);
             _context.SaveChanges();
             return Json(result.Id);
+        }
+
+        [Authorize]
+        [HttpGet("type/leaderboard")]
+        public async Task<IActionResult> RenderLeaderboard(int seconds)
+        {
+            var users = _context.Users
+                .Include(x => x.Results)
+                .Where(x => x.Results
+                .Any(x => x.TimeSpent == seconds))
+                .Select(x => ProfileInfoService.GenerateInfo(x, _context))
+                .ToList()
+                .OrderByDescending(x => ResultProviderService.GetBestTimeResult(x.Results.ToList(), seconds).Wpm)
+                .ToList();
+  var user = ProfileInfoService.GenerateInfo(await _userManager.GetUserAsync(User),_context);   
+            ViewData["Seconds"] = seconds;
+            if (seconds == 15)
+            {
+                return PartialView("Partials/_LeftLeaderboardPartial", new { Users = users, CurrentUser = user });
+            }
+            else
+            {
+                return PartialView("Partials/_RightLeaderboardPartial", new { Users = users, CurrentUser = user });
+            }
         }
     }
 }

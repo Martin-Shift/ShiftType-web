@@ -61,6 +61,6 @@ namespace ShiftType.DbModels
         /// <summary>
         /// Differenct between max and min speeds of the test
         /// </summary>
-        public int Consistency { get => (int)(((double)Math.Max(JsonSerializer.Deserialize<int[]>(TypedSeconds).Min(),1) / Math.Max(JsonSerializer.Deserialize<int[]>(TypedSeconds).Max(),1)) * 100); }
+        public int Consistency { get => TypedSeconds == null ? 0 : (int)(((double)Math.Max(JsonSerializer.Deserialize<int[]>(TypedSeconds).Min(),1) / Math.Max(JsonSerializer.Deserialize<int[]>(TypedSeconds).Max(),1)) * 100); }
     }
 }

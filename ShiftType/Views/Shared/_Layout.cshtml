@@ -5,7 +5,7 @@
     var user = await UserManager.GetUserAsync(User);
 
 }
-    <style>
+<style>
     :root {
         --bg-color: #1e1e1e;
         --main-color: #007acc;
@@ -24,7 +24,7 @@
 <link href="https://localhost:7228/img/99bdd2d4-4435-4ba0-bdda-3c37e1852c55.png" rel="icon">
 <title>@ViewData["Title"]</title>
 <link rel="stylesheet" href="/css/site.css">
-    @RenderSection("styles", required: false)
+@RenderSection("styles", required: false)
 
 <div id="app" class="">
     <div></div>
@@ -65,7 +65,7 @@
                    title="start test">
                     <div class="icon"><i class="fas fa-fw fa-keyboard"></i></div>
                 </a><button class="textButton leaderboards view-leaderboards" onclick="this.blur()" title="leaderboard">
-                    <div class="icon"><i class="fas fa-fw fa-crown"></i></div>
+                    <div class="icon" id="leaderboardswitch"><i class="fas fa-fw fa-crown"></i></div>
                 </button> <a class="textButton view-about" href="/about" onclick="this.blur()" router-link=""
                              title="about">
                     <div class="icon"><i class="fas fa-fw fa-info"></i></div>
@@ -74,40 +74,40 @@
                     <div class="icon"><i class="fas fa-fw fa-cog"></i></div>
                 </a>
                 <div></div>
-                @if(User.Identity.IsAuthenticated && user != null)
+                @if (User.Identity.IsAuthenticated && user != null)
                 {
-                           
+
                     <a class="textButton account view-account" href="/account/account" onclick="this.blur()"
-                              router-link="" style="opacity: 1; pointer-events: auto;">
-                    <div class="loading hidden" style="opacity: 0;">
-                        <i class="fas fa-fw fa-spin fa-circle-notch"></i>
-                    </div>
-                    <div class="avatar"></div>
-                  
-                    <div class="user" style="opacity: 1;"><i class="fas fa-fw fa-user"></i></div>                 
-                    <div class="text">@user.VisibleName</div>
-                    <div class="levelAndBar">
-                        <div class="level">@user.Level</div>
-                    </div>
-                </a>
+                       router-link="" style="opacity: 1; pointer-events: auto;">
+                        <div class="loading hidden" style="opacity: 0;">
+                            <i class="fas fa-fw fa-spin fa-circle-notch"></i>
+                        </div>
+                        <div class="avatar"></div>
+
+                        <div class="user" style="opacity: 1;"><i class="fas fa-fw fa-user"></i></div>
+                        <div class="text">@user.VisibleName</div>
+                        <div class="levelAndBar">
+                            <div class="level">@user.Level</div>
+                        </div>
+                    </a>
                     <button class="text signInOut" onclick="logout()">
                         <div class="icon"><i class="fas fa-fw fa-sign-out-alt"></i></div>
                     </button>
                 }
                 else
                 {
-                    <button  class="text signInOut" onclick="gotoLogin()">
+                    <button class="text signInOut" onclick="gotoLogin()">
                         <div class="icon"><i class="far fa-fw fa-user"></i><span style="margin-left:7px">login</span></div>
                     </button>
                 }
             </nav>
-    @RenderSection("header",required:false)
+            @RenderSection("header",required:false)
 
-</header>
+        </header>
 
-    <div>
-    @RenderBody()
-    </div>
+        <div>
+            @RenderBody()
+        </div>
         <footer class="">
             <div id="commandLineMobileButton"><i class="fas fa-terminal"></i></div>
             <div class="keyTips">
@@ -141,28 +141,47 @@
                         <div class="text">Security</div>
                     </a><a href="/./privacy-policy.html" class="textButton" target="_blank">
                         <i class="fas fa-fw fa-lock"></i>
-                        <div class="text">Privacy</div>
+                        <div class="text">Privacy</div> 
                     </a>
                 </div>
             </div>
-        @RenderSection("footer",required:false)
-    </footer>
+            @RenderSection("footer",required:false)
+        </footer>
     </div>
     <div></div>
 </div>
+<div id="popups">
+    <div id="leaderboardsWrapper" class="popupWrapper" style="opacity: 1; display:none;"
+         data-select2-id="select2-data-leaderboardsWrapper">
+        <div id="leaderboards" data-select2-id="select2-data-leaderboards">
+            <div class="leaderboardsTop" data-select2-id="select2-data-12-vz3c">
+                <div class="mainTitle">All-Time English Leaderboards</div>
+                <div class="textButton showYesterdayButton hidden">
+                    <i class="fas fa-calendar-day"></i>
+                    <div class="text">Show yesterday</div>
+                </div>
+            </div>
+            <div class="tables">
+                <div class="titleAndTable" id="leaderboardContainer15s">
+                </div>
+                <div class="titleAndTable" id="leaderboardContainer60s">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/canvasjs/1.7.0/canvasjs.min.js" integrity="sha512-FJ2OYvUIXUqCcPf1stu+oTBlhn54W0UisZB/TNrZaVMHHhYvLBV9jMbvJYtvDe5x/WVaoXZ6KB+Uqe5hT2vlyA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-    <script>
-        console.log(`@User.Identity.IsAuthenticated`);
-        function gotoLogin()
-        {
-            window.location.href="/Auth/Login";
-        }
-        function gotoRegister()
-        {
-            window.location.href="/Auth/Register";
-        }
+<script>
+    console.log(`@User.Identity.IsAuthenticated`);
+    function gotoLogin() {
+        window.location.href = "/Auth/Login";
+    }
+    function gotoRegister() {
+        window.location.href = "/Auth/Register";
+    }
     function logout() {
         fetch('/Auth/Logout', {
             method: 'POST',
@@ -181,5 +200,41 @@
                 console.error('Error:', error);
             });
     }
-    </script>
-    @RenderSection("scripts",required:false);
+    var leaderboardWrapper = document.getElementById('leaderboardsWrapper');
+    leaderboardWrapper.addEventListener('click', function (event) {
+        if (event.target === leaderboardWrapper) {
+            leaderboardWrapper.style.display = 'none';
+            }
+        });
+
+    $(document).ready(function () {
+        function loadPartialView(containerId, seconds) {
+            $.ajax({
+                url: '@Url.Action("RenderLeaderboard", "Type")',
+                type: 'GET',
+                data: { seconds: seconds },
+                success: function (result) {
+                    $("#" + containerId).html(result);
+                },
+                error: function () {
+                    $("#" + containerId).html("Error occurred while loading the partial view.");
+                }
+            });
+        }
+        if(`@User.Identity.IsAuthenticated` == "True"){
+        loadPartialView("leaderboardContainer15s", 15);
+        loadPartialView("leaderboardContainer60s", 60);
+        }
+    });
+    document.getElementById("leaderboardswitch").addEventListener("click",function(){
+        leaderboardWrapper.style.display = 'flex';
+    });
+    document.addEventListener("keydown",function()
+    {
+        if(event.key=="Escape" && document.getElementById('leaderboardsWrapper').style.display == "flex" )
+        {
+            leaderboardWrapper.style.display = 'none';
+        }
+    });
+</script>
+@RenderSection("scripts",required:false);

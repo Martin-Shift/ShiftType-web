@@ -1,0 +1,144 @@
+﻿@using ShiftType.Models;
+@using ShiftType.Services;
+@{
+    var users = Model.Users as List<Profile>;
+    var user = Model.CurrentUser as Profile;
+    var bestResult = user.Best60SResult;
+}
+<div class="titleAndTable">
+    <div class="titleAndButtons">
+        <div class="title">
+            Time 60 <i class="leftTableLoader fas fa-fw fa-spin fa-circle-notch hidden"></i>
+        </div>
+        <div class="buttons">
+            <div class="button leftTableJumpToTop"><i class="fas fa-fw fas fa-crown"></i></div>
+            <div class="button leftTableJumpToMe"><i class="fas fa-fw fas fa-user"></i></div>
+        </div>
+    </div>
+    <div class="rightTableWrapper">
+        <table class="right">
+            <thead>
+                <tr>
+                    <td width="1%">#</td>
+                    <td>name</td>
+                    <td class="alignRight" width="15%">
+                        wpm<br>
+                        <div class="sub">accuracy</div>
+                    </td>
+                    <td class="alignRight" width="15%">
+                        raw<br>
+                        <div class="sub">consistency</div>
+                    </td>
+                    <td class="alignRight" width="22%">date</td>
+                </tr>
+            </thead>
+            <tbody>
+                @for (int i = 0; i < users.Count; i++)
+                {
+                    var result = ResultProviderService.GetBestTimeResult(users[i].Results, 60);
+
+                    <tr>
+                        <td>
+                            @if (i == 0)
+                            {
+                                <i class="fas fa-fw fa-crown"></i>
+                            }
+                            else
+                            {
+                                @(i + 1)
+                            }
+
+                        </td>
+                        <td>
+
+                            <div class="avatarNameBadge">
+                                @if (users[i].ImageUrl == null)
+                                {
+                                    <div class="avatarPlaceholder"><i class="fas fa-user-circle"></i></div>
+                                }
+                                else
+                                {
+                                    <div class="lbav">
+                                        <div class="avatar"
+                                             style="background-image:url(@("https://localhost:7228/" + users[i].ImageUrl))">
+                                        </div>
+                                    </div>
+                                }
+                                <a href="/profile/profile/@users[i].Id"
+                                   class="entryName" uid="yjJwJdoh04hnms9sD0UdpfeoAXV2"
+                                   router-link="">@users[i].Name</a>
+                                @if (users[i].Badge != null)
+                                {
+                                    <div class="badge" aria-label="Yes, I'm actually this fast"
+                                         data-balloon-pos="right"
+                                         style="@users[i].Badge.Color">
+                                        <i class="fas  @users[i].Badge.FaIcon"></i>
+                                        <div class="text">@users[i].Badge.Name</div>
+                                    </div>
+                                }
+                            </div>
+
+                        </td>
+                        <td class="alignRight">
+                            @result.Wpm<br>
+                            <div class="sub">@result.Accuracy%</div>
+                        </td>
+                        <td class="alignRight">
+                            @(result.Wpm + result.Errors)<br>
+                            <div class="sub">@(result?.Consistency ?? 0)%</div>
+                        </td>
+                        <td class="alignRight">
+                            @result.Date.ToString("dd MMM yyyy")<br>
+                            <div class="sub">@result.Date.ToString("hh:mm")</div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+            <tfoot>
+                <tr>
+
+                    <td>@user.LeaderBoard60S</td>
+                    <td>
+                            <div class="avatarNameBadge">
+                                @if (user.ImageUrl == null)
+                                {
+                                    <div class="avatarPlaceholder"><i class="fas fa-user-circle"></i></div>
+                                }
+                                else
+                                {
+                                    <div class="lbav">
+                                        <div class="avatar" style="background-image:url(@("https://localhost:7228/" + user.ImageUrl))">
+                                        </div>
+                                    </div>
+                                }
+                                <a href="/profile/profile/@user.Id"
+                                   class="entryName" uid="yjJwJdoh04hnms9sD0UdpfeoAXV2"
+                                   router-link="">@user.Name</a>
+                                @if (user.Badge != null)
+                                {
+                                    <div class="badge" aria-label="Yes, I'm actually this fast"
+                                         data-balloon-pos="right"
+                                         style="@user.Badge.Color">
+                                        <i class="fas  @user.Badge.FaIcon"></i>
+                                        <div class="text">@user.Badge.Name</div>
+                                    </div>
+                                }
+                            </div>
+                    </td>
+                    <td class="alignRight">
+                        @bestResult.Wpm<br>
+                        <div class="sub">@bestResult.Accuracy%</div>
+                    </td>
+                    <td class="alignRight">
+                        @(bestResult.Wpm + bestResult.Errors)<br>
+                        <div class="sub">@bestResult.Consistency%</div>
+                    </td>
+                    <td class="alignRight">
+                        @bestResult.Date.ToString("dd MMM yyyy")<br>
+                        <div class="sub">@bestResult.Date.ToString("hh:mm")</div>
+                    </td>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+</div>

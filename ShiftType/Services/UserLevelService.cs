@@ -6,7 +6,8 @@ namespace ShiftType.Services
         public static void AddExp(User user,int xp)
         {
             user.Exp += xp;
-            if(user.Exp >= GetNextLevelExp(user.Level)) 
+            
+            while(user.Exp >= GetNextLevelExp(user.Level)) 
             {
                 LevelUp(user);
             }

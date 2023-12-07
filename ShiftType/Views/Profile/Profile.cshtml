@@ -8,3 +8,196 @@
 }
 @model Profile;
 
+@using ShiftType.Models;
+@using ShiftType.DbModels;
+@using ShiftType.Services;
+@using System.Text.Json;
+@section styles{
+    
+}
+<main style="height:100%" class="">
+    <div class="page pageAccount active" id="pageAccount" style="opacity: 1; height: unset;">
+        <div class="scrollToTopButton invisible"><i class="fas fa-angle-double-up"></i></div>
+        <div class="preloader hidden" style="opacity: 0;">
+            <div class="icon"><i class="fas fa-fw fa-spin fa-circle-notch"></i></div>
+            <div class="barWrapper hidden">
+                <div class="bar">
+                    <div class="fill" style="width: 100%;"></div>
+                </div>
+                <div class="text">Displaying stats...</div>
+            </div>
+        </div>
+        <div class="content" style="opacity: 1;">
+            <div class="miniResultChartWrapper">
+                <canvas id="miniResultChart"
+                        style="display: block; box-sizing: border-box; height: 0px; width: 0px;" height="0"
+                        width="0"></canvas>
+            </div>
+            <div class="miniResultChartBg"></div>
+            <div class="profile" uid="" name="@Model.Name">
+                <div class="details both">
+                    <div class="avatarAndName">
+                        <div class="avatars">
+                            <div class="placeholderAvatar" ><img style="border-radius:50%; width:80px; height:80px;" src="@("https://localhost:7228/" + @Model.ImageUrl)"></div>
+                            <div class="avatar"></div>
+                        </div>
+                        <div>
+                            <div class="name" style="font-size: 32px;">@Model.Name</div>
+                            <div class="badges">
+                                @if(Model.Badge != null){
+                                    <div class="badge" aria-label="Yes, I'm actually this fast" data-balloon-pos="right" style="@Model.Badge.Color">
+                                        <i class="fas  @Model.Badge.FaIcon"></i>
+                                        <div class="text">@Model.Badge.Name</div>
+                                    </div>
+                                }
+                            </div>
+                            <div class="allBadges"></div>
+                            <div class="joined" data-balloon-pos="up" aria-label="674 days ago">Joined @Model.CreatedAt</div>
+                            <div class="streak" data-balloon-pos="up" data-balloon-length="large" aria-label="
+                                 Claimed today: yes
+                                 Come back in: 6 hours
+                                 If the streak reset time doesn't line up with your timezone, you can change it in Settings>
+                                Danger zone > Update streak hour offset." data-balloon-break="">
+                            </div>
+                        </div>
+                        <div class="levelAndBar">
+                            <div class="level" data-balloon-pos="up" aria-label="208.8k total xp">@Model.Level</div>
+                            <div class="xpBar">
+                                <div class="bar" style="width: @((((double)Model.Exp/UserLevelService.GetNextLevelExp(Model.Level))*100).ToString().Replace(",","."))%;"></div>
+                            </div>
+                            <div class="xp" data-balloon-pos="up" aria-label="976 xp until next level">@Model.Exp/@UserLevelService.GetNextLevelExp(Model.Level)</div>
+                        </div>
+                    </div>
+                    <div class="separator sep1"></div>
+                    <div class="typingStats vertical">
+                        <div class="started">
+                            <div class="title">tests completed</div>
+                            <div class="value">@Model.TestsCompleted</div>
+                        </div>
+                        <div class="timeTyping">
+                            <div class="title">time typing</div>
+                            <div class="value">@Model.TotalTimeTyped.ToString(@"hh\:mm\:ss")</div>
+                        </div>
+                    </div>
+                    <div class="separator sep2"></div>
+                    <div class="bioAndKeyboard">
+                        <div class="bio">
+                            <div class="title">bio</div>
+                            <div class="value">
+                                @Model.Description
+                            </div>
+                        </div>
+                        <div class="keyboard">
+                            <div class="title"></div>
+                            <div class="value">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="separator sep3"></div>
+
+                    <div class="buttonGroup">
+                        <button id="editProfileButton" class="editProfileButton" data-balloon-pos="left" aria-label="Edit profile" role="button">
+                            <i class="fas fa-pen"></i>
+                        </button>
+                        <button class="copyLink button" onclick="copylink()" data-balloon-pos="left" aria-label="Copy public link" role="button">
+                            <i class="fas fa-link"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="leaderboardsPositions">
+                    <div class="title">All-Time English Leaderboards</div>
+                    <div class="group t15">
+                        <div class="testType">15 seconds</div>
+                        <div class="pos">@(Model.LeaderBoard15S)th</div>
+                    </div>
+                    <div class="group t60">
+                        <div class="testType">60 seconds</div>
+                        <div class="pos">@(Model.LeaderBoard15S)th</div>
+                    </div>
+                </div>
+                <div class="pbsTime">
+                    <div class="group">
+                        <div class="quick">
+                            <div class="test">15 seconds</div>
+                            <div class="wpm">@Model.Best15SResult.Wpm</div>
+                            <div class="acc">@(Model.Best15SResult?.Accuracy)%</div>
+                        </div>
+                    </div>
+
+                    <div class="group">
+                        <div class="quick">
+                            <div class="test">30 seconds</div>
+                            <div class="wpm">@Model.Best30SResult?.Wpm</div>
+                            <div class="acc">@(Model.Best30SResult?.Accuracy)%</div>
+                        </div>
+                    </div>
+
+                    <div class="group">
+                        <div class="quick">
+                            <div class="test">60 seconds</div>
+                            <div class="wpm">@Model.Best60SResult.Wpm</div>
+                            <div class="acc">@(Model.Best60SResult.Accuracy)%</div>
+                        </div>
+                    </div>
+
+                    <div class="group">
+                        <div class="quick">
+                            <div class="test">120 seconds</div>
+                            <div class="wpm">@Model.Best120SResult.Wpm</div>
+                            <div class="acc">@(Model.Best120SResult.Accuracy)%</div>
+                        </div>
+                    </div>
+                    <div class="buttonGroup">
+                        <button class="showAllButton" data-balloon-pos="left" aria-label="Show all personal bests">
+                            <i class="fas fa-ellipsis-v"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="pbsWords">
+                    <div class="group">
+                        <div class="quick">
+                            <div class="test">10 words</div>
+                            <div class="wpm">@Model.Best10WordsResult.Wpm</div>
+                            <div class="acc">@(Model.Best10WordsResult.Accuracy)%</div>
+                        </div>
+                    </div>
+
+                    <div class="group">
+                        <div class="quick">
+                            <div class="test">25 words</div>
+                            <div class="wpm">@Model.Best25WordsResult.Wpm</div>
+                            <div class="acc">@(Model.Best25WordsResult.Accuracy)%</div>
+                        </div>
+                    </div>
+
+                    <div class="group">
+                        <div class="quick">
+                            <div class="test">50 words</div>
+                            <div class="wpm">@Model.Best50WordsResult.Wpm</div>
+                            <div class="acc">@(Model.Best50WordsResult.Accuracy)%</div>
+                        </div>
+                    </div>
+
+                    <div class="group">
+                        <div class="quick">
+                            <div class="test">100 words</div>
+                            <div class="wpm">@Model.Best100WordsResult.Wpm</div>
+                            <div class="acc">@(Model.Best100WordsResult.Accuracy)%</div>
+                        </div>
+                    </div>
+                    <div class="buttonGroup">
+                        <button class="showAllButton" data-balloon-pos="left" aria-label="Show all personal bests">
+                            <i class="fas fa-ellipsis-v"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/canvasjs/1.7.0/canvasjs.min.js" integrity="sha512-FJ2OYvUIXUqCcPf1stu+oTBlhn54W0UisZB/TNrZaVMHHhYvLBV9jMbvJYtvDe5x/WVaoXZ6KB+Uqe5hT2vlyA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+@section scripts{
+
+}

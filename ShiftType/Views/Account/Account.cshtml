@@ -42,7 +42,7 @@
                             <div class="name" style="font-size: 32px;">@Model.Name</div>
                             <div class="badges">
                                 @if(Model.Badge != null){
-                                    <div class="badge" aria-label="Yes, I'm actually this fast" data-balloon-pos="right" style="color: @Model.Badge.Color;">
+                                    <div class="badge" aria-label="Yes, I'm actually this fast" data-balloon-pos="right" style="@Model.Badge.Color">
                                         <i class="fas  @Model.Badge.FaIcon"></i>
                                         <div class="text">@Model.Badge.Name</div>
                                     </div>
@@ -339,7 +339,7 @@
                 <div class="loadMoreButton">load more</div>
             </div>
             <div class="group aboveHistory">
-                <div onclick="exportExcel()" class="button exportCSV"><i class="fas fa-file-excel"></i> Export Excel</div>
+                <div onclick="downloadExcel()" class="button exportCSV"><i class="fas fa-file-excel"></i> Export Excel</div>
             </div>
         </div>
     </div>
@@ -603,21 +603,8 @@
         }
     });
 
-    function exportExcel()
-    {
-        fetch('/Auth/SubmitLogin', {
-            method: 'POST',
-            body: JSON.stringify(loginData),
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        })
-            .then(response => response.json())
-            .then(data => {
-                window.location.href = "/";
-            })
-            .catch(error => {
-                console.error('Error:', error);
-            });
+     function downloadExcel() {
+        window.location.href = '/account/exportExcel';
     }
+
 </script>

@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Identity;
 using ShiftType.DbModels;
 using ShiftType.Services;
+using OfficeOpenXml;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -22,21 +23,23 @@ builder.Services.AddDbContext<TypingDbContext>(options =>
     SQLitePCL.raw.SetProvider(new SQLitePCL.SQLite3Provider_e_sqlite3());
     options.UseSqlite("Data Source=D:\\Mein progectos\\ShiftType\\ShiftType\\TypingDb.db");
 });
-
+ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
 //builder.Services.AddLocalization(options => options.ResourcesPath = "Resources");
 builder.Services.AddIdentity<User, IdentityRole<int>>(options =>
 {
     options.Password.RequiredLength = 8;
     options.Password.RequireNonAlphanumeric = false;
+    options.Password.RequireUppercase = false;
 })
 .AddEntityFrameworkStores<TypingDbContext>()
 .AddDefaultTokenProviders();
-builder.Services.AddAuthentication();
-    //.AddGoogle(options =>
-    //{
-    //    options.ClientId = "YourClientId";
-    //    options.ClientSecret = "YourClientSecret";
-    //});
+builder.Services.AddAuthentication()
+.AddGoogle(options =>
+{
+    options.ClientId = builder.Configuration["GoogleAuth:ClientId"];
+
+    options.ClientSecret = builder.Configuration["GoogleAuth:ClientId"];
+});
 builder.Services.AddControllersWithViews()
     .AddViewLocalization();
 builder.Services.AddSession(options =>
