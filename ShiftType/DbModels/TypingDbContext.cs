@@ -14,7 +14,6 @@ public class TypingDbContext : IdentityDbContext<User, IdentityRole<int>, int>
     public virtual DbSet<Quote> Quotes { get; set; }
     public virtual DbSet<ImageFile> Images { get; set; }
     public virtual DbSet<Result> Results { get; set; }
-    public virtual DbSet<Review> Reviews { get; set; }
     public virtual DbSet<Badge> Badges { get; set; }
 }
 

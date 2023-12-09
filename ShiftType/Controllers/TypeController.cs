@@ -35,7 +35,8 @@ namespace ShiftType.Controllers
         [HttpPost("type/getTest")]
         public IActionResult GetTest([FromBody] Modifiers modifiers)
         {
-            var text = "";
+            
+             var text = "";
             var random = new Random();
             string[] words;
             switch (modifiers.TestType)
@@ -55,7 +56,7 @@ namespace ShiftType.Controllers
                     }
                     break;
                 case TestTypes.Quote:
-                    text += TestProviderService.GetRandomQuote(modifiers.Language, (QuoteType)modifiers.QuoteType);
+                    text += TestProviderService.GetRandomQuote(modifiers.Language, (QuoteType)modifiers.QuoteType, _context).Text;
                     break;
                 case TestTypes.Custom:
                     text = modifiers.CustomText;
@@ -123,6 +124,22 @@ namespace ShiftType.Controllers
             {
                 return PartialView("Partials/_RightLeaderboardPartial", new { Users = users, CurrentUser = user });
             }
+        }
+
+        [Authorize]
+        [HttpPost("quote/submit")] 
+        public async Task<IActionResult> SubmitQuote(Quote quote)
+        {
+            var user = await _userManager.GetUserAsync(User);
+            if (!_context.Quotes.Any(x=> x.Text == quote.Text)) {
+                quote.Publisher = user;
+                _context.Quotes.Add(quote);
+                _context.SaveChanges();
+                return Ok(new {Message = "Success!"});
+            }
+            return BadRequest(new { Message = "Quote Already Exists!" });
+
+
         }
     }
 }

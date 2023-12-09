@@ -50,8 +50,7 @@
                             <div class="textButton" quotelength="2">medium</div>
                             <div class="textButton" quotelength="3">long</div>
                             <div class="textButton" quotelength="4">thicc</div>
-                            <div class="textButton favorite" quotelength="-3"><i class="fas fa-heart"></i></div>
-                            <div class="textButton" quotelength="-2"><i class="fas fa-search"></i></div>
+                    <div id="addQuoteButton" class="textButton" quotelength="-2"><i class="fas fa-plus"></i></div>
                         </div>
                         <div class="zen hidden">
                             <div class="textButton" style="width:0;padding-left:0;padding-right:0"> </div>
@@ -111,9 +110,18 @@
                 </div>
             </div>
         </main>
-
+<div id="popups">
+    <div id="editProfilePopupWrapper" class="popupWrapper" tabindex="-1" style="opacity: 1; display:none;">
+        <div id="editProfilePopup">
+            <div class="title">Submit Quote</div>
+            <div><label>Source</label> <input class="website" value="" placeholder="Quote source goes here..." name="Source"></div>
+            <div><label>Text</label> <textarea class="bio" type="text" autocomplete="off" placeholder="Quote text goes here..." name="Text"></textarea></div>
+            <button class="edit-profile-submit" id="submitAdd">Submit</button>
+        </div>
+    </div>
+</div>
 <script src="~/js/site.js"></script>
-<script src="~/js/modifierControlls.js?v=10"></script>
+<script src="~/js/modifierControlls.js?v=12"></script>
 <script>
     // Initialization
     let currentWordIndex = 0;
@@ -129,6 +137,7 @@
     let wordStopwatch;
 let timeRemaining;
 let timeSpent = 0;
+let isUppercase = false;
 // Function to start the timer
 function startTimer() {
         timeRemaining = globalModifiers.TimeAmount;
@@ -234,7 +243,14 @@ function startTimer() {
        }
     }
 
-    document.addEventListener('keydown', (event) => {
+    document.addEventListener('keydown', (event) => { 
+        if (document.getElementById("editProfilePopupWrapper").style.display == "grid") {
+            return;
+        }
+        if (event.keyCode === 32) {
+            event.preventDefault();
+        }
+        
         const currentWord = wordsArray[currentWordIndex];
         const currentLetter = currentWord[currentLetterIndex];
 
@@ -244,7 +260,7 @@ function startTimer() {
                 startTimer();
             }
 
-            if (document.getElementById('wordSwitch').classList.contains('active') && wordStopwatch === undefined) {
+            if ((document.getElementById('wordSwitch').classList.contains('active') && wordStopwatch === undefined) || (document.getElementById('quoteSwitch').classList.contains('active') && wordStopwatch === undefined)) {
                 startWordStopwatch();
             }
             const letterElement = document.querySelector(`.word:nth-child(${currentWordIndex + 1}) > letter:nth-child(${currentLetterIndex + 1})`);
@@ -252,16 +268,17 @@ function startTimer() {
             if (letterElement) {
 
                 letterElement.classList.add('correct');
-                currentLetterIndex++;
+               currentLetterIndex++;
+               
                 if (currentWordIndex > lineEndIndex && event.key != ' ') {
                     const currentLetterRect = letterElement.getBoundingClientRect();
-                    if (previousLetterPos === 0) {
+                    if(previousLetterPos == 0)
+                    {
                         previousLetterPos = currentLetterRect.top;
                     }
-                   
                     if (currentLetterRect.top !== previousLetterPos && currentLetterRect.top > previousLetterPos) {
-                      
-                        
+                      console.log(previousLetterPos);
+                      console.log(currentLetterRect.top)
                         previousLetterPos = currentLetterRect.top;
                         if (lineEndIndex >= 1) {
                             wordsArray.splice(0, lineEndIndex);
@@ -269,9 +286,8 @@ function startTimer() {
                              currentWordIndex-=(lineEndIndex);
                         }
                         lineEndIndex = currentWordIndex;
+
                         
-                       console.log(wordsArray);
-                       console.log(words);
                       
                     }  
                    previousLetterPos=currentLetterRect.top;
@@ -318,7 +334,7 @@ function startTimer() {
                 if (globalModifiers.TimeAmount != null && timer === undefined) {
                     startTimer();
                 }
-                if (document.getElementById('wordSwitch').classList.contains('active') && wordStopwatch === undefined) {
+                if ((document.getElementById('wordSwitch').classList.contains('active') && wordStopwatch === undefined) || (document.getElementById('quoteSwitch').classList.contains('active') && wordStopwatch === undefined)) {
                     startWordStopwatch();
                 }
                 if (letterElement) {
@@ -345,8 +361,6 @@ function startTimer() {
             {
                 testSeconds.push([...typedLetters]);
             }
-            console.log(typedLetters.length);
-            console.log(words.join('').length);
             if (typedLetters.length === words.join('').length) {
                 clearInterval(wordStopwatch); 
                 testSeconds.push([...typedLetters]);
@@ -389,4 +403,68 @@ function startTimer() {
 
      getTest(createModifiers(0,{TimeAmount:15}));
     document.getElementById('time-remaining').innerText = 15;
+
+    const addQuoteShowButton = document.getElementById('addQuoteButton');
+
+    // Get the popup wrapper and form elements
+    const addQuotePopupWrapper = document.getElementById('editProfilePopupWrapper');
+    const addQuoteForm = document.getElementById('editProfilePopup');
+
+    // Attach a click event listener to the button
+    addQuoteShowButton.addEventListener('click', function (event) {
+        event.preventDefault();
+
+        // Show the edit profile popup
+        addQuotePopupWrapper.style.display = 'grid';
+        addQuotePopupWrapper.focus();
+    });
+
+    // Optional: Close the popup when the user clicks outside the form
+    addQuotePopupWrapper.addEventListener('click', function (event) {
+        if (event.target === addQuotePopupWrapper) {
+            addQuotePopupWrapper.style.display = 'none';
+        }
+    });
+
+    // Optional: Close the popup when the 'ESC' key is pressed
+    document.addEventListener('keydown', function (event) {
+        if (event.key === 'Escape' || event.keyCode === 27) {
+            addQuotePopupWrapper.style.display = 'none';
+        }
+    });
+
+    function downloadExcel() {
+        window.location.href = '/account/exportExcel';
+    }
+
+    document.getElementById('submitAdd').addEventListener('click', function(){
+
+        // Create a new FormData object
+        var formData = new FormData();
+
+        // Get the form elements by their names and add them to the formData
+        var formElements = document.querySelectorAll('#editProfilePopup [name]');
+        formElements.forEach(function (element) {
+
+        formData.append(element.name, element.value);
+        
+        });
+
+        fetch('/quote/submit', {
+            method: 'POST',
+            body: formData
+        })
+            .then(response => {
+                if (response.ok) {
+                    document.getElementById('editProfilePopupWrapper').style.display = 'none';
+                } else {
+                    // Handle errors or failed submission
+                    console.error('Error submitting form data');
+                }
+            })
+            .catch(error => {
+                // Handle fetch errors
+                console.error('Fetch error:', error);
+            });
+    });
 </script>

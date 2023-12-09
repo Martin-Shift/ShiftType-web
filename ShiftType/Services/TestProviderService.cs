@@ -1,4 +1,5 @@
-﻿using ShiftType.Models;
+﻿using ShiftType.DbModels;
+using ShiftType.Models;
 using System.Text.Json;
 
 namespace ShiftType.Services
@@ -13,28 +14,30 @@ namespace ShiftType.Services
             var text = System.IO.File.ReadAllText(dir + path);
             return JsonSerializer.Deserialize<string[]>(text);
         }
-        public static string GetRandomQuote(string language, QuoteType quoteType)
+       public static Quote GetRandomQuote(string language, QuoteType quoteType, TypingDbContext context)
         {
-            var quotes = JsonSerializer.Deserialize<string[]>(System.IO.File.ReadAllText($"Quotes{language.Replace(" ", "_")}.json"));
+            IEnumerable<Quote> quotes = context.Quotes;
+            //TODO make quote languages
+            // = context.Quotes.Where(x => x.Language == language);
             switch (quoteType)
             {
                 case QuoteType.All:
                     break;
                 case QuoteType.Short:
-                    quotes = quotes.Where(x => x.Length <= 105).ToArray();
+                    quotes = context.Quotes.Where(x => x.Text.Length <= 105);
                     break;
                 case QuoteType.Medium:
-                    quotes = quotes.Where(x => x.Length > 105 && x.Length <= 275).ToArray();
+                    quotes = context.Quotes.Where(x => x.Text.Length > 105 && x.Text.Length <= 275);
                     break;
                 case QuoteType.Large:
-                    quotes = quotes.Where(x => x.Length > 275 && x.Length <= 550).ToArray();
+                    quotes = context.Quotes.Where(x => x.Text.Length > 275 && x.Text.Length <= 550);
                     break;
                 case QuoteType.Thicc:
-                    quotes = quotes.Where(x => x.Length > 550).ToArray();
+                    quotes = context.Quotes.Where(x => x.Text.Length > 550);
                     break;
 
             }
-            return quotes[new Random().Next(0, quotes.Length - 1)];
+            return quotes.ElementAt(new Random().Next(0, quotes.Count()));
 
         }
     }

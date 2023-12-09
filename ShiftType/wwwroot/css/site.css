@@ -5196,8 +5196,9 @@ header {
     #streakHourOffsetPopupWrapper #streakHourOffsetPopup .red {
         color: var(--error-color)
     }
-
-#editProfilePopupWrapper #editProfilePopup, #editProfilePopupWrapper #newResultFilterPresetPopup, #editProfilePopupWrapper #tagsEdit, #newResultFilterPresetPopupWrapper #editProfilePopup, #newResultFilterPresetPopupWrapper #newResultFilterPresetPopup, #newResultFilterPresetPopupWrapper #tagsEdit, #tagsWrapper #editProfilePopup, #tagsWrapper #newResultFilterPresetPopup, #tagsWrapper #tagsEdit {
+.typePopupWrapper .typePopup, .typePopupWrapper #tagsEdit, #newResultFilterPresetPopupWrapper .typePopup, #tagsWrapper .typePopup,
+#editProfilePopupWrapper #editProfilePopup,
+#editProfilePopupWrapper #newResultFilterPresetPopup, #editProfilePopupWrapper #tagsEdit, #newResultFilterPresetPopupWrapper #editProfilePopup, #newResultFilterPresetPopupWrapper #newResultFilterPresetPopup, #newResultFilterPresetPopupWrapper #tagsEdit, #tagsWrapper #editProfilePopup, #tagsWrapper #newResultFilterPresetPopup, #tagsWrapper #tagsEdit {
     background: var(--bg-color);
     border-radius: var(--roundness);
     display: grid;
@@ -5206,8 +5207,8 @@ header {
     overflow-y: scroll;
     padding: 2rem
 }
-
-    #editProfilePopupWrapper #editProfilePopup .title, #editProfilePopupWrapper #newResultFilterPresetPopup .title, #editProfilePopupWrapper #tagsEdit .title, #newResultFilterPresetPopupWrapper #editProfilePopup .title, #newResultFilterPresetPopupWrapper #newResultFilterPresetPopup .title, #newResultFilterPresetPopupWrapper #tagsEdit .title, #tagsWrapper #editProfilePopup .title, #tagsWrapper #newResultFilterPresetPopup .title, #tagsWrapper #tagsEdit .title {
+    .typePopupWrapper .typePopup .title, .typePopupWrapper #newResultFilterPresetPopup .title, .typePopupWrapper #tagsEdit .title, #newResultFilterPresetPopupWrapper .typePopup .title, #tagsWrapper .typePopup .title
+    #addQuotePopupWrapper #addQuotePopup .title, #editProfilePopupWrapper #editProfilePopup .title, #editProfilePopupWrapper #newResultFilterPresetPopup .title, #editProfilePopupWrapper #tagsEdit .title, #newResultFilterPresetPopupWrapper #editProfilePopup .title, #newResultFilterPresetPopupWrapper #newResultFilterPresetPopup .title, #newResultFilterPresetPopupWrapper #tagsEdit .title, #tagsWrapper #editProfilePopup .title, #tagsWrapper #newResultFilterPresetPopup .title, #tagsWrapper #tagsEdit .title {
         color: var(--sub-color);
         font-size: 1.5rem
     }
@@ -5216,21 +5217,21 @@ header {
     display: grid;
     gap: 1rem
 }
-
-#editProfilePopup {
+.typePopup,
+#editProfilePopup, #addQuotePopup {
     max-width: 600px;
     width: 100%
 }
-
-    #editProfilePopup label {
+   .typePopupWrapper,
+    #editProfilePopup label, #addQuotePopup label {
         color: var(--sub-color)
     }
-
-    #editProfilePopup input {
+    .typePopup input,
+    #editProfilePopup input, #addQuotePopup input {
         width: 100%
     }
-
-    #editProfilePopup textarea {
+    .typePopup textarea,
+    #editProfilePopup textarea, #addQuotePopup textarea {
         line-height: 1.2rem;
         max-height: 10rem;
         min-height: 5rem;
@@ -5238,21 +5239,21 @@ header {
         resize: vertical;
         width: 100%
     }
-
-    #editProfilePopup .socialURL {
+    .typePopup .socialURL,
+    #editProfilePopup .socialURL, #addQuotePopup .socialURL {
         display: flex
     }
-
-        #editProfilePopup .socialURL > p {
-            margin-block: .5rem;
-            margin-inline-end: .5rem
-        }
-
+    .typePopup .socialURL > p,
+    #editProfilePopup .socialURL > p {
+        margin-block: .5rem;
+        margin-inline-end: .5rem
+    }
+    .typePopup .badgeSelectionContainer,
     #editProfilePopup .badgeSelectionContainer {
         display: flex;
         flex-wrap: wrap
     }
-
+    .typePopup .badgeSelectionItem,
     #editProfilePopup .badgeSelectionItem {
         cursor: pointer;
         margin-bottom: .5rem;
@@ -5261,10 +5262,10 @@ header {
         width: -moz-max-content;
         width: max-content
     }
-
-        #editProfilePopup .badgeSelectionItem.selected, #editProfilePopup .badgeSelectionItem:hover {
-            opacity: 100%
-        }
+    .typePopup .badgeSelectionItem.selected,
+    #editProfilePopup .badgeSelectionItem.selected, #editProfilePopup .badgeSelectionItem:hover {
+        opacity: 100%
+    }
 
 #alertsPopupWrapper {
     justify-content: end;

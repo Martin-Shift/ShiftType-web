@@ -88,12 +88,14 @@ function getTest(modifiers) {
         })
         .then(data => {
             const test = data.test;
-
+            
             wordsArray = test.split(/\s+/);
-
+           
             // Add a space character at the end of each word
             wordsArray = wordsArray.map(word => word + ' ');
-            wordsArray.pop();
+            if (modifiers.TestType != 2) {
+                wordsArray.pop();
+            }
             wordsArray[wordsArray.length - 1] = wordsArray[wordsArray.length - 1].slice(0, -1);
             words = [...wordsArray];
             const wordsContainer = document.querySelector('#words');
