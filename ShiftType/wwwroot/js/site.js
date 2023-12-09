@@ -98,8 +98,8 @@ document.querySelectorAll('.quoteLength .textButton').forEach(button => {
         button.classList.add('active');
     });
 });
-const punctuationButton = document.querySelector('.puncAndNum .punctuationMode');
-const numbersButton = document.querySelector('.puncAndNum .numbersMode');
+const punctuationButton = document.getElementById("punctuationSwitch");
+const numbersButton = document.getElementById("numbersSwitch");
 
 punctuationButton.addEventListener('click', () => {
     if (punctuationButton.classList.contains('active')) {

@@ -29,6 +29,33 @@
             </div>
         </div>
     }
+    @if (Model.CreatedQuotes.Count > 0)
+    {
+        <div class="badgeSelectionItem" value="3">
+            <div class="badge" style="background-color: #0e38ad;">
+                <i class="fas fa-book"></i>
+                <div class="text">Author</div>
+            </div>
+        </div>
+    }
+    @if (Model.Level >= 10)
+    {
+        <div class="badgeSelectionItem" value="4">
+            <div class="badge" style="background-color: #14b527;">
+                <i class="fas fa-user"></i>
+                <div class="text">Adept</div>
+            </div>
+        </div>
+    }
+    @if (Model.Level >= 100)
+    {
+        <div class="badgeSelectionItem" value="5">
+            <div class="badge" style="background-color: #ad2409;">
+                <i class="fas fa-medal"></i>
+                <div class="text">Veteran</div>
+            </div>
+        </div>
+    }
 </div>
 <script>
     function handleBadgeSelection(event) {

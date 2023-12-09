@@ -50,6 +50,8 @@ namespace ShiftType.Models
 
         public Result? Best100WordsResult { get => ResultProviderService.GetBestWordResult(Results, 100); }
 
+        public List<Quote> CreatedQuotes { get; set; }
+
         public int WordsTyped { get => Results.Sum(x => x.TypedText.Split(" ").Length); }
 
         public List<double> WpmChart { get => Results.Select(x => x.Wpm).ToList(); }

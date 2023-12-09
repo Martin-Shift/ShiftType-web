@@ -18,8 +18,8 @@
                 <div id="testConfig">
                     <div class="row" id="overallBar" style=" transition: width 0.3s ease-in-out;">
                         <div class="puncAndNum" style="opacity: 1;">
-                            <div class="textButton punctuationMode"><i class="fas fa-fw fa-at"></i> punctuation</div>
-                            <div class="textButton numbersMode"><i class="fas fa-fw fa-hashtag"></i> numbers</div>
+                            <div id="punctuationSwitch" class="textButton punctuationMode"><i class="fas fa-fw fa-at"></i> punctuation</div>
+                            <div id="numbersSwitch" class="textButton numbersMode"><i class="fas fa-fw fa-hashtag"></i> numbers</div>
                         </div>
                         <div class="spacer leftSpacer"></div>
                         <div class="mode">
@@ -34,7 +34,7 @@
                             <div class="textButton active" timeconfig="15"><span>15</span></div>
                             <div class="textButton" timeconfig="30"><span>30</span></div>
                             <div class="textButton" timeconfig="60"><span>60</span></div>
-                            <div class="textButton" timeconfig="120"><span>120</span></div>
+                            <div   class="textButton" timeconfig="120"><span>120</span></div>
                             <div class="textButton" timeconfig="custom"><i class="fas fa-fw fa-tools"></i></div>
                         </div>
                         <div class="wordCount hidden">
@@ -121,7 +121,7 @@
     </div>
 </div>
 <script src="~/js/site.js"></script>
-<script src="~/js/modifierControlls.js?v=12"></script>
+<script src="~/js/modifierControlls.js?v=13"></script>
 <script>
     // Initialization
     let currentWordIndex = 0;
@@ -138,53 +138,54 @@
 let timeRemaining;
 let timeSpent = 0;
 let isUppercase = false;
-// Function to start the timer
+
+function submitResult(testType,timeSpent)
+{
+        const data = {
+            TypedText: typedLetters,
+            OriginalText: words,
+            IsNumbers: globalModifiers.IsNumbers,
+            IsSymbols: globalModifiers.IsSymbols,
+            TypedSeconds: testSeconds,
+            Language: document.getElementById('language').textContent,
+            TimeSpent: timeSpent,
+            Type: testType,
+        };
+        fetch('type/submit', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data),
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok.');
+                }
+                return response.json();
+            })
+            .then(result => {
+                console.log(result);
+                window.location.href = `type/results/${result}`;
+            })
+            .catch(error => {
+                // Handle errors here
+                console.error('There was a problem with the submission:', error);
+            });
+}
+
+
 function startTimer() {
         timeRemaining = globalModifiers.TimeAmount;
     timer = setInterval(() => {
         timeRemaining--;
-
-        // Update UI to display the time remaining
-        // For example, update a DOM element with the time remaining
         document.getElementById('time-remaining').innerText = timeRemaining;
             testSeconds.push([...typedLetters]);
         if (timeRemaining <= 0) {
                 clearInterval(timer); // Stop the timer when it reaches zero
-
-                // Prepare the data to be sent in the POST request
-                const data = {
-                    TypedText: typedLetters,
-                    OriginalText: words,
-                    IsNumbers: false,
-                    IsSymbols:false,
-                    TypedSeconds:testSeconds,
-                    Language: document.getElementById('language').textContent,
-                    TimeSpent: globalModifiers.TimeAmount,
-                    Type: 0,
-                };
-
-                // Send a POST request to "type/submit" with the data
-                fetch('type/submit', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(data),
-                })
-                    .then(response => {
-                        if (!response.ok) {
-                            throw new Error('Network response was not ok.');
-                        }
-                        return response.json();
-                    })
-                    .then(result => {
-                        console.log(result);
-                       window.location.href=`type/results/${result}`
-                    })
-                    .catch(error => {
-                        // Handle errors here
-                        console.error('There was a problem with the submission:', error);
-                    });
+                console.log(globalModifiers);
+               
+                submitResult(0,globalModifiers.TimeAmount);
         }
     }, 1000); // Update every second (1000 milliseconds)
 }
@@ -364,39 +365,7 @@ function startTimer() {
             if (typedLetters.length === words.join('').length) {
                 clearInterval(wordStopwatch); 
                 testSeconds.push([...typedLetters]);
-                const data = {
-                    TypedText: typedLetters,
-                    OriginalText: words,
-                    IsNumbers: false,
-                    IsSymbols: false,
-                    TypedSeconds: testSeconds,
-                    Language: document.getElementById('language').textContent,
-                    TimeSpent: timeSpent/1000,
-                        Type: 1,
-                };
-
-                // Send a POST request to "type/submit" with the data
-                fetch('type/submit', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(data),
-                })
-                    .then(response => {
-                        if (!response.ok) {
-                            throw new Error('Network response was not ok.');
-                        }
-                        return response.json();
-                    })
-                    .then(result => {
-                        console.log(result);
-                        window.location.href = `type/results/${result}`;
-                    })
-                    .catch(error => {
-                        // Handle errors here
-                        console.error('There was a problem with the submission:', error);
-                    });
+                submitResult(1,timeSpent/1000);
             }
         }, 40); 
     }

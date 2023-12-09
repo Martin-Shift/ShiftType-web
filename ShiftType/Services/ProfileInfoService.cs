@@ -8,7 +8,7 @@ namespace ShiftType.Services
     {
         public static Profile GenerateInfo(User user, TypingDbContext context)
         {
-            var prof = context.Users.Include(x => x.Results).Include(x => x.Badge).Include(x => x.Logo).First(x=> x.Id == user.Id);
+            var prof = context.Users.Include(x => x.Results).Include(x => x.Badge).Include(x => x.Logo).Include(x=> x.CreatedQuotes).First(x=> x.Id == user.Id);
                 var profile = new Profile()
             {
                 Id = prof.Id,
@@ -20,6 +20,7 @@ namespace ShiftType.Services
                 Level = prof.Level,
                 Exp  = prof.Exp,
                 Badge = prof.Badge,
+                CreatedQuotes = prof.CreatedQuotes.ToList()
                           };
             profile.LeaderBoard15S = GetPlacement(profile, context, 15);
             profile.LeaderBoard60S = GetPlacement(profile, context, 60);

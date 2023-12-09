@@ -16,17 +16,19 @@
 
 document.getElementById('timeSwitch').addEventListener('click', () => {
     const timeConfig = 15; // Replace this value with your logic
-    const modifiers = createModifiers(0, { TimeAmount: timeConfig });
+    globalModifiers.TimeAmount = 15
+    globalModifiers.TestType = 0;
     resetTest();
-    getTest(modifiers);
+    getTest(globalModifiers);
     document.getElementById('time-remaining').innerText = timeConfig;
 });
 
 document.getElementById('wordSwitch').addEventListener('click', () => {
-    const wordCount = 10;
-    const modifiers = createModifiers(1, { WordCount: wordCount });
+    globalModifiers.WordCount = 10;
+    globalModifiers.TestType = 1;
+    globalModifiers.TimeAmount = null;
     resetTest();
-    getTest(modifiers);
+    getTest(globalModifiers);
 });
 
 document.getElementById('quoteSwitch').addEventListener('click', () => {
@@ -36,18 +38,18 @@ document.getElementById('quoteSwitch').addEventListener('click', () => {
     if (quoteTypeButton) {
         quoteType = parseInt(quoteTypeButton.getAttribute('quotelength'));
     }
-
-    const modifiers = createModifiers(2, { QuoteType: quoteType });
+    globalModifiers.TimeAmount = null;
+    globalModifiers.TestType = 2;
+    globalModifiers.QuoteType = quoteType;
     resetTest();
-    getTest(modifiers);
+    getTest(globalModifiers);
 });
 const timeConfigButtons = document.querySelectorAll('.time .textButton');
 timeConfigButtons.forEach((button) => {
     button.addEventListener('click', () => {
-        const timeConfig = parseInt(button.getAttribute('timeconfig'));
-        const modifiers = createModifiers(0, { TimeAmount: timeConfig });
+        globalModifiers.TimeAmount = parseInt(button.getAttribute('timeconfig'));
         resetTest();
-        getTest(modifiers);
+        getTest(globalModifiers);
         document.getElementById('time-remaining').innerText = timeConfig;
     });
 });
@@ -55,10 +57,9 @@ timeConfigButtons.forEach((button) => {
 const wordCountButtons = document.querySelectorAll('.wordCount .textButton');
 wordCountButtons.forEach((button) => {
     button.addEventListener('click', () => {
-        const wordCount = parseInt(button.getAttribute('wordcount'));
-        const modifiers = createModifiers(1, { WordCount: wordCount });
+        globalModifiers.WordCount = parseInt(button.getAttribute('wordcount'));
         resetTest();
-        getTest(modifiers);
+        getTest(globalModifiers);
         document.getElementById('time-remaining').innerText = globalModifiers.TimeAmount;
     });
 });
@@ -66,8 +67,7 @@ wordCountButtons.forEach((button) => {
 const quoteLengthButtons = document.querySelectorAll('.quoteLength .textButton');
 quoteLengthButtons.forEach((button) => {
     button.addEventListener('click', () => {
-        const quoteType = parseInt(button.getAttribute('quotelength'));
-        const modifiers = createModifiers(2, { QuoteType: quoteType });
+        globalModifiers.QuoteType = parseInt(button.getAttribute('quotelength'));
         resetTest();
         getTest(modifiers);
     });
@@ -93,9 +93,6 @@ function getTest(modifiers) {
            
             // Add a space character at the end of each word
             wordsArray = wordsArray.map(word => word + ' ');
-            if (modifiers.TestType != 2) {
-                wordsArray.pop();
-            }
             wordsArray[wordsArray.length - 1] = wordsArray[wordsArray.length - 1].slice(0, -1);
             words = [...wordsArray];
             const wordsContainer = document.querySelector('#words');
@@ -119,3 +116,15 @@ function getTest(modifiers) {
             console.error('There was a problem with the fetch operation:', error.message);
         });
 }
+
+
+punctuationButton.addEventListener('click', () => {
+    globalModifiers.IsSymbols = punctuationButton.classList.contains("active");
+    resetTest();
+    getTest(globalModifiers);
+});
+numbersButton.addEventListener('click', () => {
+    globalModifiers.IsNumbers = numbersButton.classList.contains("active");
+    resetTest();
+    getTest(globalModifiers);
+});

@@ -34,26 +34,15 @@ namespace ShiftType.Controllers
         }
         [HttpPost("type/getTest")]
         public IActionResult GetTest([FromBody] Modifiers modifiers)
-        {
-            
+        {          
              var text = "";
-            var random = new Random();
-            string[] words;
             switch (modifiers.TestType)
             {
                 case TestTypes.Time:
-                    words = TestProviderService.GetWords(modifiers.Language);
-                    for (int i = 0; i < 4 * modifiers.TimeAmount; i++)
-                    {
-                        text += words[random.Next(0, words.Length - 1)] + " ";
-                    }
+                    text = TestProviderService.GetWords(modifiers.Language,modifiers.TimeAmount*5,modifiers.IsSymbols,modifiers.IsNumbers);
                     break;
                 case TestTypes.Words:
-                    words = TestProviderService.GetWords(modifiers.Language);
-                    for (int i = 0; i < modifiers.WordCount; i++)
-                    {
-                        text += words[random.Next(0, words.Length - 1)] + " ";
-                    }
+                    text = TestProviderService.GetWords(modifiers.Language,modifiers.WordCount, modifiers.IsSymbols, modifiers.IsNumbers);
                     break;
                 case TestTypes.Quote:
                     text += TestProviderService.GetRandomQuote(modifiers.Language, (QuoteType)modifiers.QuoteType, _context).Text;
@@ -78,7 +67,7 @@ namespace ShiftType.Controllers
             result.TestType = (int)resultModel.Type;
 
             result.Wpm = TypeHelperService.CountWPM(input, check, (double)resultModel.TimeSpent);
-            result.TimeSpent = (double)resultModel.TimeSpent;
+            result.TimeSpent = resultModel.TimeSpent ?? 0;
 
             var wordsArr = resultModel.TypedSeconds.Select(x => string.Join("", x)).ToArray();
             List<int> wpm = new() { };
@@ -95,7 +84,7 @@ namespace ShiftType.Controllers
                 var user = await _userManager.GetUserAsync(User);
                 result.User = user;
 
-                UserLevelService.AddExp(user, (result.TypedText.Length - result.Errors) / 3);
+                UserLevelService.AddExp(user, (int)((result.TypedText.Length - result.Errors) / 3 * ((resultModel.IsNumbers ?? false) ? 1.2 : 1) * ((resultModel.IsSymbols ?? false) ? 1.2 : 1)));
             }
             _context.Results.Add(result);
             _context.SaveChanges();

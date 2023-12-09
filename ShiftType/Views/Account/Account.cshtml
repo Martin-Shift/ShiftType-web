@@ -109,7 +109,7 @@
                     </div>
                     <div class="group t60">
                         <div class="testType">60 seconds</div>
-                        <div class="pos">@(Model.LeaderBoard15S)th</div>
+                        <div class="pos">@(Model.LeaderBoard60S)th</div>
                     </div>
                 </div>
                 <div class="pbsTime">
@@ -282,9 +282,6 @@
                     <div class="val">@ResultProviderService.AverageBy(last10Tests, x => x.Consistency)%</div>
                 </div>
             </div>
-            <div class="group aboveHistory">
-                <div class="button exportCSV"><i class="fas fa-file-csv"></i> Export CSV</div>
-            </div>
             <div class="group history">
                 <table width="100%">
                     <thead>
@@ -297,7 +294,6 @@
                             <td aria-label="correct/incorrect/extra/missed" data-balloon-pos="up">chars</td>
                             <td>mode</td>
                             <td>info</td>
-                            <td>tags</td>
                             <td type="button" class="sortable history-date-header">
                                 date <i class="fas fa-sort-down"
                                         aria-hidden="true"></i>
@@ -316,18 +312,9 @@
                                 <td>@(result.Text.Length)/@(result.Errors)/0/0</td>
                                 <td>@((TestTypes)(result.TestType))</td>
                                 <td class="infoIcons">
-                                    <span aria-label="english" data-balloon-pos="up">
-                                        <i class="fas fa-fw fa-globe-americas"></i>
-                                    </span><span aria-label="normal"
-                                                 data-balloon-pos="up"><i class="far fa-fw fa-star"></i></span>
+
                                                  <a href="/type/results/@result.Id" class="miniResultChartButton" aria-label="View graph" data-balloon-pos="up"
                                                  filteredresultsid="0" style="opacity: 1"><i class="fas fa-chart-line"></i></a>
-                                </td>
-                                <td>
-                                    <span id="resultEditTags" resultid="656e12347275ef81405bd23b" tags="[]"
-                                          aria-label="no tags" data-balloon-pos="up" style="opacity: .25">
-                                        <i class="fas fa-fw fa-tag"></i>
-                                    </span>
                                 </td>
                                 <td>
                                     @result.Date
@@ -486,7 +473,7 @@
             borderColor: '#1e1e1e',
             borderWidth: 10,
             data: wordsChart,
-            barThickness: 80,
+            barThickness: 960/wordsChart.length,
             barPercentage: 0.6,
             categoryPercentage: 0.8,
         }]
@@ -538,7 +525,7 @@
             borderColor: '#007acc',
             borderWidth: 1,
             data: timeChart,
-            barThickness: 5,
+            barThickness: 6,
         }]
     };
 

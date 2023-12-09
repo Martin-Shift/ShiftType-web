@@ -17,7 +17,6 @@ namespace ShiftType.Tests
         public void TestProfile()
         {
             var user = UserFactory.CreateRandom();
-
             var profile = ProfileInfoService.GenerateInfo(user);
             Assert.NotNull(profile);
             Assert.NotNull(profile.Results);
