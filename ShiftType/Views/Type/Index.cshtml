@@ -65,7 +65,7 @@
                 </div>
                 <div id="typingTest" style="opacity: 1;">
                     <div id="testModesNotice">
-                        <div class="textButton" commands="languages"><i class="fas fa-globe-americas"></i><p id="language">english</p></div>
+                        <div id="languageSelector" class="textButton" commands="languages"><i class="fas fa-globe-americas"></i><p id="language">english</p></div>
                     </div>
                     <div id="miniTimerAndLiveWpm" class="timerMain" style="font-size: 1.5rem;">
                         <div id="time-remaining" class="time" style="opacity: 0.25;">31
@@ -119,9 +119,23 @@
             <button class="edit-profile-submit" id="submitAdd">Submit</button>
         </div>
     </div>
+    <div id="commandLineWrapper" class="" style="opacity: 1; display:none;">
+        <div id="commandLine">
+            <div style="display:grid;grid-template-columns:auto 1fr;align-items:center">
+                <div class="searchicon"><i class="fas fa-search"></i></div><input id="searchInput" class="input"
+                                                                                  placeholder="Type to search">
+            </div>
+            <div class="separator hidden" style="height: 1px; margin-bottom: 0.5rem;"></div>
+            <div class="suggestions" id="languageList">
+            @Html.Partial("Partials/_LanguageListPartial","")
+            </div>
+        </div>
+        <div id="commandInput" class="hidden"><input class="input" placeholder="input"></div>
+    </div>
 </div>
+<script src = "~/js/popups.js"></script>
 <script src="~/js/site.js"></script>
-<script src="~/js/modifierControlls.js?v=13"></script>
+<script src="~/js/modifierControlls.js?v=15"></script>
 <script>
     // Initialization
     let currentWordIndex = 0;
@@ -245,7 +259,7 @@ function startTimer() {
     }
 
     document.addEventListener('keydown', (event) => { 
-        if (document.getElementById("editProfilePopupWrapper").style.display == "grid") {
+        if (document.getElementById("editProfilePopupWrapper").style.display == "grid" || document.getElementById("commandLineWrapper").style.display == "grid") {
             return;
         }
         if (event.keyCode === 32) {
@@ -372,68 +386,4 @@ function startTimer() {
 
      getTest(createModifiers(0,{TimeAmount:15}));
     document.getElementById('time-remaining').innerText = 15;
-
-    const addQuoteShowButton = document.getElementById('addQuoteButton');
-
-    // Get the popup wrapper and form elements
-    const addQuotePopupWrapper = document.getElementById('editProfilePopupWrapper');
-    const addQuoteForm = document.getElementById('editProfilePopup');
-
-    // Attach a click event listener to the button
-    addQuoteShowButton.addEventListener('click', function (event) {
-        event.preventDefault();
-
-        // Show the edit profile popup
-        addQuotePopupWrapper.style.display = 'grid';
-        addQuotePopupWrapper.focus();
-    });
-
-    // Optional: Close the popup when the user clicks outside the form
-    addQuotePopupWrapper.addEventListener('click', function (event) {
-        if (event.target === addQuotePopupWrapper) {
-            addQuotePopupWrapper.style.display = 'none';
-        }
-    });
-
-    // Optional: Close the popup when the 'ESC' key is pressed
-    document.addEventListener('keydown', function (event) {
-        if (event.key === 'Escape' || event.keyCode === 27) {
-            addQuotePopupWrapper.style.display = 'none';
-        }
-    });
-
-    function downloadExcel() {
-        window.location.href = '/account/exportExcel';
-    }
-
-    document.getElementById('submitAdd').addEventListener('click', function(){
-
-        // Create a new FormData object
-        var formData = new FormData();
-
-        // Get the form elements by their names and add them to the formData
-        var formElements = document.querySelectorAll('#editProfilePopup [name]');
-        formElements.forEach(function (element) {
-
-        formData.append(element.name, element.value);
-        
-        });
-
-        fetch('/quote/submit', {
-            method: 'POST',
-            body: formData
-        })
-            .then(response => {
-                if (response.ok) {
-                    document.getElementById('editProfilePopupWrapper').style.display = 'none';
-                } else {
-                    // Handle errors or failed submission
-                    console.error('Error submitting form data');
-                }
-            })
-            .catch(error => {
-                // Handle fetch errors
-                console.error('Fetch error:', error);
-            });
-    });
 </script>

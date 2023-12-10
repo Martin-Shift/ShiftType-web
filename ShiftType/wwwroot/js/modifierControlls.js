@@ -69,10 +69,11 @@ quoteLengthButtons.forEach((button) => {
     button.addEventListener('click', () => {
         globalModifiers.QuoteType = parseInt(button.getAttribute('quotelength'));
         resetTest();
-        getTest(modifiers);
+        getTest(globalModifiers);
     });
 });
 function getTest(modifiers) {
+    modifiers.Language = document.getElementById('language').textContent;
     fetch('type/getTest', {
         method: 'POST',
         headers: {

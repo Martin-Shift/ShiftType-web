@@ -35,7 +35,7 @@ namespace ShiftType.Controllers
         [HttpPost("type/getTest")]
         public IActionResult GetTest([FromBody] Modifiers modifiers)
         {          
-             var text = "";
+            var text = "";
             switch (modifiers.TestType)
             {
                 case TestTypes.Time:
@@ -75,7 +75,7 @@ namespace ShiftType.Controllers
             {
                 wpm.Add(TypeHelperService.CountWPM(wordsArr[i], check, i + 1));
             }
-            result.TypedSeconds = JsonSerializer.Serialize(wpm);
+           result.TypedSeconds = JsonSerializer.Serialize(wpm);
             result.Errors = TypeHelperService.CountErrors(input, check);
             result.Date = DateTime.Now;
 

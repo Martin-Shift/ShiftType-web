@@ -1,0 +1,10 @@
+﻿@model string;
+@{
+    string[] languages = { "english", "code csharp", "code sql" };
+}
+    @foreach(var lang in languages.Where(x=> x.Contains(Model))){
+    <div class="entry languageEntry" style="">
+        <div class="icon"><i class="fas fa-fw"></i></div>
+        <div>@lang</div>
+    </div>
+    }
