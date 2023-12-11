@@ -45,9 +45,9 @@ namespace ShiftType.DbModels
         public double TimeSpent { get; set; }
 
         /// <summary>
-        /// Seconds Spent on a test 
+        /// Selected language of a test
         /// </summary>
-        //public string Language { get; set; }
+        public string Language { get; set; }
 
         /// <summary>
         /// Date When the test was written

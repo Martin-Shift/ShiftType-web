@@ -23,7 +23,12 @@ namespace ShiftType.Controllers
         [HttpGet]
         public IActionResult Index()
         {
-            return View();
+            string? modifiers = null;
+            if (Request.Cookies.ContainsKey("Modifiers"))
+            {
+                modifiers = Request.Cookies["Modifiers"];
+            }
+            return View(model:modifiers);
         }
         [HttpGet("type/results/{id}")]
         public IActionResult Results(int id)
@@ -53,6 +58,11 @@ namespace ShiftType.Controllers
                 default:
                     break;
             }
+            var json = JsonSerializer.Serialize(modifiers);
+            // Assuming you're working with an ASP.NET application
+            // Add a cookie in one line
+            Response.Cookies.Append("Modifiers", json, new CookieOptions() { Expires = DateTimeOffset.Now.AddDays(5) });
+            
             return Ok(new { Test = text });
         }
 
@@ -78,7 +88,7 @@ namespace ShiftType.Controllers
            result.TypedSeconds = JsonSerializer.Serialize(wpm);
             result.Errors = TypeHelperService.CountErrors(input, check);
             result.Date = DateTime.Now;
-
+            result.Language = resultModel.Language;
             if (User.Identity.IsAuthenticated)
             {
                 var user = await _userManager.GetUserAsync(User);

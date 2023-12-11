@@ -45,6 +45,8 @@ document.getElementById('timeSwitch').addEventListener('click', () => {
 
 });
 
+
+
 document.getElementById('wordSwitch').addEventListener('click', () => {
     showTestType('words');
     document.getElementById('wordSwitch').classList.add('active');
@@ -121,6 +123,3 @@ numbersButton.addEventListener('click', () => {
     // TODO logic for handling numbers mode
 });
 
-function createChart() {
-
-}

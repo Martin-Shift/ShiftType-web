@@ -1,7 +1,7 @@
 ﻿
 @{
     Layout = "_Layout";
-    ViewData["Title"] = "ShiftType";
+    ViewData["Title"] = "KeyFlex";
 }
 
 @section styles{
@@ -31,25 +31,25 @@
                         </div>
                         <div class="spacer rightSpacer"></div>
                         <div class="time">
-                            <div class="textButton active" timeconfig="15"><span>15</span></div>
-                            <div class="textButton" timeconfig="30"><span>30</span></div>
-                            <div class="textButton" timeconfig="60"><span>60</span></div>
-                            <div   class="textButton" timeconfig="120"><span>120</span></div>
-                            <div class="textButton" timeconfig="custom"><i class="fas fa-fw fa-tools"></i></div>
+                    <div id="timeAmountButton15" class="textButton active" timeconfig="15"><span>15</span></div>
+                            <div id="timeAmountButton30"  class="textButton" timeconfig="30"><span>30</span></div>
+                    <div id="timeAmountButton60" class="textButton" timeconfig="60"><span>60</span></div>
+                    <div id="timeAmountButton120" class="textButton" timeconfig="120"><span>120</span></div>
+                    <div id="timeAmountButton" class="textButton" timeconfig="custom"><i class="fas fa-fw fa-tools"></i></div>
                         </div>
                         <div class="wordCount hidden">
-                            <div class="textButton" wordcount="10"><span>10</span></div>
-                            <div class="textButton" wordcount="25"><span>25</span></div>
-                            <div class="textButton" wordcount="50"><span>50</span></div>
-                            <div class="textButton" wordcount="100"><span>100</span></div>
-                            <div class="textButton" wordcount="custom"><i class="fas fa-fw fa-tools"></i></div>
+                    <div id="wordCountButton10" class="textButton" wordcount="10"><span>10</span></div>
+                    <div id="wordCountButton25" class="textButton" wordcount="25"><span>25</span></div>
+                    <div id="wordCountButton50" class="textButton" wordcount="50"><span>50</span></div>
+                    <div id="wordCountButton100" class="textButton" wordcount="100"><span>100</span></div>
+                    <div id="wordCountButton" class="textButton" wordcount="custom"><i class="fas fa-fw fa-tools"></i></div>
                         </div>
                         <div class="quoteLength hidden">
-                            <div class="textButton" quotelength="0">all</div>
-                            <div class="textButton" quotelength="1">short</div>
-                            <div class="textButton" quotelength="2">medium</div>
-                            <div class="textButton" quotelength="3">long</div>
-                            <div class="textButton" quotelength="4">thicc</div>
+                            <div id="quotelength0" class="textButton" quotelength="0">all</div>
+                            <div id="quotelength1" class="textButton" quotelength="1">short</div>
+                    <div id="quotelength2" class="textButton" quotelength="2">medium</div>
+                    <div id="quotelength3" class="textButton" quotelength="3">long</div>
+                    <div id="quotelength4" class="textButton" quotelength="4">thicc</div>
                     <div id="addQuoteButton" class="textButton" quotelength="-2"><i class="fas fa-plus"></i></div>
                         </div>
                         <div class="zen hidden">
@@ -384,6 +384,16 @@ function startTimer() {
         }, 40); 
     }
 
-     getTest(createModifiers(0,{TimeAmount:15}));
+   // try
+   // {
+   // var mods = JSON.parse(`@Html.Raw(Model)`);
+   //    globalModifiers = mods;
+   //    updateModifiers(globalModifiers);
+   // }
+   //catch(e)
+   //{
+   globalModifiers = createModifiers(0,{TimeAmount:15});
+   //}
+     getTest(globalModifiers);
     document.getElementById('time-remaining').innerText = 15;
 </script>

@@ -2,7 +2,7 @@
     Layout = "_Layout";
     var typeSeconds = JsonSerializer.Deserialize<int[]>(Model.TypedSeconds);
     var consistency = (int)(((double)typeSeconds.Min() / typeSeconds.Max()) * 100);
-    ViewData["Title"] = "Results - ShiftType";
+    ViewData["Title"] = "Results - KeyFlex";
 }
 @model Result;
 @using System.Text.Json;
@@ -15,111 +15,6 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/canvasjs/1.7.0/canvasjs.min.js" integrity="sha512-FJ2OYvUIXUqCcPf1stu+oTBlhn54W0UisZB/TNrZaVMHHhYvLBV9jMbvJYtvDe5x/WVaoXZ6KB+Uqe5hT2vlyA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <main style="height:100%" class="">
     <div class="page pageTest active" style="opacity: 1;">
-        <div id="testConfig" class="invisible">
-            <div class="row">
-                <div class="puncAndNum" style="opacity: 1;">
-                    <div class="textButton punctuationMode"><i class="fas fa-fw fa-at"></i> punctuation</div>
-                    <div class="textButton numbersMode"><i class="fas fa-fw fa-hashtag"></i> numbers</div>
-                </div>
-                <div class="spacer leftSpacer"></div>
-                <div class="mode">
-                    <div class="textButton active" mode="time"><i class="fas fa-fw fa-clock"></i> time</div>
-                    <div class="textButton" mode="words"><i class="fas fa-fw fa-font"></i> words</div>
-                    <div class="textButton" mode="quote"><i class="fas fa-fw fa-quote-left"></i> quote</div>
-                    <div class="textButton" mode="zen"><i class="fas fa-fw fa-mountain"></i> zen</div>
-                    <div class="textButton" mode="custom"><i class="fas fa-fw fa-wrench"></i> custom</div>
-                </div>
-                <div class="spacer rightSpacer"></div>
-                <div class="time">
-                    <div class="textButton active" timeconfig="15"><span>15</span></div>
-                    <div class="textButton" timeconfig="30"><span>30</span></div>
-                    <div class="textButton" timeconfig="60"><span>60</span></div>
-                    <div class="textButton" timeconfig="120"><span>120</span></div>
-                    <div class="textButton" timeconfig="custom"><i class="fas fa-fw fa-tools"></i></div>
-                </div>
-                <div class="wordCount hidden">
-                    <div class="textButton" wordcount="10"><span>10</span></div>
-                    <div class="textButton" wordcount="25"><span>25</span></div>
-                    <div class="textButton" wordcount="50"><span>50</span></div>
-                    <div class="textButton" wordcount="100"><span>100</span></div>
-                    <div class="textButton" wordcount="custom"><i class="fas fa-fw fa-tools"></i></div>
-                </div>
-                <div class="quoteLength hidden">
-                    <div class="textButton" quotelength="-1">all</div>
-                    <div class="textButton" quotelength="0">short</div>
-                    <div class="textButton" quotelength="1">medium</div>
-                    <div class="textButton" quotelength="2">long</div>
-                    <div class="textButton" quotelength="3">thicc</div>
-                </div>
-                <div class="zen hidden">
-                    <div class="textButton" style="width:0;padding-left:0;padding-right:0"> </div>
-                </div>
-                <div class="customText hidden">
-                    <div class="textButton">change</div>
-                </div>
-            </div>
-        </div>
-        <div id="mobileTestConfig" class="invisible">
-            <div class="textButton"><i class="fas fa-fw fa-cog"></i> Test Settings</div>
-        </div>
-        <div id="typingTest" style="opacity: 0;" class="hidden">
-            <div id="capsWarning" class="hidden"><i class="fas fa-lock"></i> Caps Lock</div>
-            <div id="memoryTimer" style="opacity: 0;">Time left to memorise all words: 0s</div>
-            <div id="layoutfluidTimer" style="opacity: 0;">Time left to memorise all words: 0s</div>
-            <div id="testModesNotice">
-                <div class="textButton" commands="languages"><i class="fas fa-globe-americas"></i>english</div>
-            </div>
-            <div id="timerNumber" class="timerMain" style="opacity: 0;">
-                <div>0</div>
-            </div>
-            <div id="miniTimerAndLiveWpm" class="timerMain" style="font-size: 1.5rem;">
-                <div class="time hidden" style="opacity: 0;">1:00</div>
-                <div class="wpm hidden">109</div>
-                <div class="acc hidden">97%</div>
-                <div class="burst hidden">0</div>
-            </div>
-            <div class="outOfFocusWarning hidden" style="line-height: 114px;">
-                <i class="fas fa-mouse-pointer"></i> Click
-                here or start typing to focus
-            </div><input id="wordsInput" class="" autocomplete="off"
-                         autocapitalize="off" autocorrect="off" data-gramm="false" data-gramm_editor="false"
-                         data-enable-grammarly="false" list="autocompleteOff" spellcheck="false" style="left: 0px; top: 94px;">
-            <div id="wordsWrapper" translate="no" style="height: 114px; overflow: hidden;">
-                <div id="paceCaret" class="hidden default" style="font-size: 1.5rem; top: -38.4px;"></div>
-                <div id="caret" class="default hidden"
-                     style="font-size: 1.5rem; animation-name: caretFlashSmooth; opacity: 1; display: block; top: 41.6px; left: 89px;">
-                </div>
-                <div id="words" class="highlight-letter"
-                     style="font-size: 1.5rem; height: 152px; overflow: hidden; width: 100%; margin-left: unset; transition: none 0s ease 0s;">
-                </div>
-            </div>
-            <div id="koInputVisualContainer" style="display: none; transition: none 0s ease 0s;" class="">
-                <div id="koInputVisual" aria-label="Korean Input Visual" class=""></div>
-            </div>
-            <div id="keymap" class="hidden"></div><button id="restartTestButton" aria-label="Restart Test"
-                                                          data-balloon-pos="down" class="text hidden" onclick="this.blur()">
-                <i class="fas fa-fw fa-redo-alt"></i>
-            </button>
-            <div id="largeLiveWpmAndAcc" class="timerMain">
-                <div id="liveWpm" class="hidden">109</div>
-                <div id="liveAcc" class="hidden">97%</div>
-                <div id="liveBurst" class="hidden">0</div>
-            </div>
-            <div id="monkey" class="hidden" style="opacity: 1; animation-duration: 0s;">
-                <div class="up"></div>
-                <div class="left hidden"></div>
-                <div class="right hidden"></div>
-                <div class="both hidden"></div>
-                <div class="fast" style="opacity: 0;">
-                    <div class="up"></div>
-                    <div class="left hidden"></div>
-                    <div class="right hidden"></div>
-                    <div class="both hidden"></div>
-                </div>
-            </div>
-            <div id="premidTestMode" class="hidden">time 15 english</div>
-            <div id="premidSecondsLeft" class="hidden">0</div>
-        </div>
         <div id="result" class="" tabindex="-1" style="opacity: 1;">
             <div class="stats">
                 <div class="group wpm">
@@ -139,7 +34,7 @@
             <div class="stats morestats">
                 <div class="group testType">
                     <div class="top">test type</div>
-                    <div class="bottom">@((ShiftType.Models.TestTypes)Model.TestType) <br>english</div>
+                    <div class="bottom">@((ShiftType.Models.TestTypes)Model.TestType) <br>@Model.Language</div>
                     <div class="tags hidden" style="margin-top:.5rem">
                         <div class="top">
                             tags<div class="textButton editTagsButton" result-id="656b5f887275ef81404b05e0"

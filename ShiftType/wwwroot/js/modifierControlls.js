@@ -129,3 +129,110 @@ numbersButton.addEventListener('click', () => {
     resetTest();
     getTest(globalModifiers);
 });
+function updateModifiers(mods) {
+    if (mods.TimeAmount === 10) {
+        document.getElementById('timeAmountButton10').classList.add('active');
+    } else {
+        document.getElementById('timeAmountButton10').classList.remove('active');
+    }
+
+    if (mods.TimeAmount === 30) {
+        document.getElementById('timeAmountButton30').classList.add('active');
+    } else {
+        document.getElementById('timeAmountButton30').classList.remove('active');
+    }
+
+    if (mods.TimeAmount === 60) {
+        document.getElementById('timeAmountButton60').classList.add('active');
+    } else {
+        document.getElementById('timeAmountButton60').classList.remove('active');
+    }
+
+    if (mods.TimeAmount === 120) {
+        document.getElementById('timeAmountButton120').classList.add('active');
+    } else {
+        document.getElementById('timeAmountButton120').classList.remove('active');
+    }
+
+    if (mods.TestType === 0) {
+        document.getElementById('timeSwitch').classList.add('active');
+    } else {
+        document.getElementById('timeSwitch').classList.remove('active');
+    }
+
+    if (mods.TestType === 1) {
+        document.getElementById('wordSwitch').classList.add('active');
+    } else {
+        document.getElementById('wordSwitch').classList.remove('active');
+    }
+
+    if (mods.TestType === 2) {
+        document.getElementById('quoteSwitch').classList.add('active');
+    } else {
+        document.getElementById('quoteSwitch').classList.remove('active');
+    }
+    if (mods.QuoteType === 0) {
+        document.getElementById('quotelength0').classList.add('active');
+    } else {
+        document.getElementById('quotelength0').classList.remove('active');
+    }
+
+    if (mods.QuoteType === 1) {
+        document.getElementById('quotelength1').classList.add('active');
+    } else {
+        document.getElementById('quotelength1').classList.remove('active');
+    }
+
+    if (mods.QuoteType === 2) {
+        document.getElementById('quotelength2').classList.add('active');
+    } else {
+        document.getElementById('quotelength2').classList.remove('active');
+    }
+
+    if (mods.QuoteType === 3) {
+        document.getElementById('quotelength3').classList.add('active');
+    } else {
+        document.getElementById('quotelength3').classList.remove('active');
+    }
+
+    if (mods.QuoteType === 4) {
+        document.getElementById('quotelength4').classList.add('active');
+    } else {
+        document.getElementById('quotelength4').classList.remove('active');
+    }
+
+    if (mods.WordCount === 10) {
+        document.getElementById('wordCountButton10').classList.add('active');
+    } else {
+        document.getElementById('wordCountButton10').classList.remove('active');
+    }
+
+    if (mods.WordCount === 25) {
+        document.getElementById('wordCountButton25').classList.add('active');
+    } else {
+        document.getElementById('wordCountButton25').classList.remove('active');
+    }
+
+    if (mods.WordCount === 50) {
+        document.getElementById('wordCountButton50').classList.add('active');
+    } else {
+        document.getElementById('wordCountButton50').classList.remove('active');
+    }
+
+    if (mods.WordCount === 100) {
+        document.getElementById('wordCountButton100').classList.add('active');
+    } else {
+        document.getElementById('wordCountButton100').classList.remove('active');
+    }
+
+    if (mods.IsNumbers) {
+        document.getElementById('numbersSwitch').classList.add('active');
+    } else {
+        document.getElementById('numbersSwitch').classList.remove('active');
+    }
+    if (mods.IsSymbols) {
+        document.getElementById('punctuationSwitch').classList.add('active');
+    } else {
+        document.getElementById('punctuationSwitch').classList.remove('active');
+    }
+}

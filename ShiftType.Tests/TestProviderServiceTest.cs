@@ -14,7 +14,7 @@ namespace ShiftType.Tests
         {
             string validLanguage = "English"; 
 
-            var words = TestProviderService.GetWords(validLanguage);
+            var words = TestProviderService.GetWords(validLanguage,10,false,false);
 
             Assert.NotNull(words);
             Assert.True(words.Length > 0);
