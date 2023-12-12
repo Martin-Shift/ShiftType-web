@@ -15,6 +15,52 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/canvasjs/1.7.0/canvasjs.min.js" integrity="sha512-FJ2OYvUIXUqCcPf1stu+oTBlhn54W0UisZB/TNrZaVMHHhYvLBV9jMbvJYtvDe5x/WVaoXZ6KB+Uqe5hT2vlyA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <main style="height:100%" class="">
     <div class="page pageTest active" style="opacity: 1;">
+        <div id="testConfig" class="invisible">
+            <div class="row">
+                <div class="puncAndNum" style="opacity: 1;">
+                    <div class="textButton punctuationMode"><i class="fas fa-fw fa-at"></i> punctuation</div>
+                    <div class="textButton numbersMode"><i class="fas fa-fw fa-hashtag"></i> numbers</div>
+                </div>
+                <div class="spacer leftSpacer"></div>
+                <div class="mode">
+                    <div class="textButton" mode="time"><i class="fas fa-fw fa-clock"></i> time</div>
+                    <div class="textButton active" mode="words"><i class="fas fa-fw fa-font"></i> words</div>
+                    <div class="textButton" mode="quote"><i class="fas fa-fw fa-quote-left"></i> quote</div>
+                    <div class="textButton" mode="zen"><i class="fas fa-fw fa-mountain"></i> zen</div>
+                    <div class="textButton" mode="custom"><i class="fas fa-fw fa-wrench"></i> custom</div>
+                </div>
+                <div class="spacer rightSpacer"></div>
+                <div class="time hidden">
+                    <div class="textButton" timeconfig="15"><span>15</span></div>
+                    <div class="textButton" timeconfig="30"><span>30</span></div>
+                    <div class="textButton" timeconfig="60"><span>60</span></div>
+                    <div class="textButton" timeconfig="120"><span>120</span></div>
+                    <div class="textButton" timeconfig="custom"><i class="fas fa-fw fa-tools"></i></div>
+                </div>
+                <div class="wordCount">
+                    <div class="textButton active" wordcount="10"><span>10</span></div>
+                    <div class="textButton" wordcount="25"><span>25</span></div>
+                    <div class="textButton" wordcount="50"><span>50</span></div>
+                    <div class="textButton" wordcount="100"><span>100</span></div>
+                    <div class="textButton" wordcount="custom"><i class="fas fa-fw fa-tools"></i></div>
+                </div>
+                <div class="quoteLength hidden">
+                    <div class="textButton" quotelength="-1">all</div>
+                    <div class="textButton" quotelength="0">short</div>
+                    <div class="textButton" quotelength="1">medium</div>
+                    <div class="textButton" quotelength="2">long</div>
+                    <div class="textButton" quotelength="3">thicc</div>
+                    <div class="textButton favorite" quotelength="-3"><i class="fas fa-heart"></i></div>
+                    <div class="textButton" quotelength="-2"><i class="fas fa-search"></i></div>
+                </div>
+                <div class="zen hidden">
+                    <div class="textButton" style="width:0;padding-left:0;padding-right:0"> </div>
+                </div>
+                <div class="customText hidden">
+                    <div class="textButton">change</div>
+                </div>
+            </div>
+        </div>
         <div id="result" class="" tabindex="-1" style="opacity: 1;">
             <div class="stats">
                 <div class="group wpm">

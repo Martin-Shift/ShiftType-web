@@ -2,7 +2,7 @@
 {
     public enum TestTypes
     {
-        Time,Words,Quote,Custom
+        Time,Words,Quote,Zen,Custom
     }
     public enum QuoteType
     {

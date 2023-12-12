@@ -18,6 +18,7 @@ builder.Configuration.AddJsonFile("appsettings.json", optional: false);
 
 // Services
 builder.Services.AddControllersWithViews();
+builder.Services.AddScoped<ShiftType.Models.LiqPay>();
 builder.Services.AddDbContext<TypingDbContext>(options =>
 {
     SQLitePCL.raw.SetProvider(new SQLitePCL.SQLite3Provider_e_sqlite3());

@@ -100,6 +100,7 @@ function loadEntries() {
             const languageParagraph = document.getElementById('language');
             languageParagraph.textContent = languageName;
             selectLanguageWrapper.style.display = "none";
+            resetTest();
             getTest(globalModifiers);
         });
     });
@@ -137,3 +138,94 @@ searchInput.addEventListener('input', function () {
        
 });
 loadEntries();
+
+
+const customConfigButton = document.getElementById('customTimeConfigButton');
+
+// Get the popup wrapper and form elements
+const customTestDurationPopupWrapper = document.getElementById('customTestDurationPopupWrapper');
+const customTestDurationPopup = document.getElementById('customTestDurationPopup');
+
+// Attach a click event listener to the button
+customConfigButton.addEventListener('click', function (event) {
+    event.preventDefault();
+
+    // Show the edit profile popup
+    customTestDurationPopupWrapper.style.display = 'grid';
+    customTestDurationPopupWrapper.focus();
+});
+
+// Optional: Close the popup when the user clicks outside the form
+customTestDurationPopupWrapper.addEventListener('click', function (event) {
+    if (event.target === customTestDurationPopupWrapper) {
+        customTestDurationPopupWrapper.style.display = 'none';
+    }
+});
+
+// Optional: Close the popup when the 'ESC' key is pressed
+document.addEventListener('keydown', function (event) {
+    if (event.key === 'Escape' || event.keyCode === 27) {
+        customTestDurationPopupWrapper.style.display = 'none';
+    }
+});
+document.getElementById("customTestDurationPopupSubmit").addEventListener("click", function () {
+
+
+    var text = document.getElementById("customTestDuration").value;
+    try {
+        var time = parseInt(text);
+        globalModifiers.TimeAmount = time;
+        resetTest();
+        getTest(globalModifiers);
+        document.getElementById('time-remaining').innerText = time;
+        customTestDurationPopupWrapper.style.display = 'none';
+    }
+    catch (ex)
+    {
+        console.error(ex);
+    }
+});
+
+
+const customWordsConfigButton = document.getElementById('customWordConfigButton');
+
+// Get the popup wrapper and form elements
+const customWordCountPopupWrapper = document.getElementById('customWordAmountPopupWrapper');
+const customWordCountPopup = document.getElementById('customWordAmountPopup');
+
+// Attach a click event listener to the button
+customWordsConfigButton.addEventListener('click', function (event) {
+    event.preventDefault();
+
+    // Show the edit profile popup
+    customWordCountPopupWrapper.style.display = 'grid';
+    customWordCountPopupWrapper.focus();
+});
+
+// Optional: Close the popup when the user clicks outside the form
+customWordCountPopupWrapper.addEventListener('click', function (event) {
+    if (event.target === customWordCountPopupWrapper) {
+        customWordCountPopupWrapper.style.display = 'none';
+    }
+});
+
+// Optional: Close the popup when the 'ESC' key is pressed
+document.addEventListener('keydown', function (event) {
+    if (event.key === 'Escape' || event.keyCode === 27) {
+        customWordCountPopupWrapper.style.display = 'none';
+    }
+});
+document.getElementById("customWordCountPopupSubmit").addEventListener("click", function () {
+
+    try {
+        var text = document.getElementById("customWordCount").value;
+        console.log(text);
+        var time = parseInt(text);
+        globalModifiers.WordCount = time;
+        getTest(globalModifiers);
+        customWordCountPopupWrapper.style.display = 'none';
+    }
+    catch (ex) {
+        console.error(ex);
+    }
+});

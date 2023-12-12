@@ -31,18 +31,18 @@
                         </div>
                         <div class="spacer rightSpacer"></div>
                         <div class="time">
-                    <div id="timeAmountButton15" class="textButton active" timeconfig="15"><span>15</span></div>
-                            <div id="timeAmountButton30"  class="textButton" timeconfig="30"><span>30</span></div>
-                    <div id="timeAmountButton60" class="textButton" timeconfig="60"><span>60</span></div>
-                    <div id="timeAmountButton120" class="textButton" timeconfig="120"><span>120</span></div>
-                    <div id="timeAmountButton" class="textButton" timeconfig="custom"><i class="fas fa-fw fa-tools"></i></div>
+                    <div id="timeAmountButton15" class="textButton active timebutton" timeconfig="15"><span>15</span></div>
+                    <div id="timeAmountButton30" class="textButton timebutton" timeconfig="30"><span>30</span></div>
+                    <div id="timeAmountButton60" class="textButton timebutton" timeconfig="60"><span>60</span></div>
+                    <div id="timeAmountButton120" class="textButton timebutton" timeconfig="120"><span>120</span></div>
+                    <div id="customTimeConfigButton" class="textButton" timeconfig="custom"><i class="fas fa-fw fa-tools"></i></div>
                         </div>
                         <div class="wordCount hidden">
-                    <div id="wordCountButton10" class="textButton" wordcount="10"><span>10</span></div>
-                    <div id="wordCountButton25" class="textButton" wordcount="25"><span>25</span></div>
-                    <div id="wordCountButton50" class="textButton" wordcount="50"><span>50</span></div>
-                    <div id="wordCountButton100" class="textButton" wordcount="100"><span>100</span></div>
-                    <div id="wordCountButton" class="textButton" wordcount="custom"><i class="fas fa-fw fa-tools"></i></div>
+                    <div id="wordCountButton10" class="textButton wordbutton" wordcount="10"><span>10</span></div>
+                    <div id="wordCountButton25" class="textButton wordbutton" wordcount="25"><span>25</span></div>
+                    <div id="wordCountButton50" class="textButton wordbutton" wordcount="50"><span>50</span></div>
+                    <div id="wordCountButton100" class="textButton wordbutton" wordcount="100"><span>100</span></div>
+                    <div id="customWordConfigButton" class="textButton" wordcount="custom"><i class="fas fa-fw fa-tools"></i></div>
                         </div>
                         <div class="quoteLength hidden">
                             <div id="quotelength0" class="textButton" quotelength="0">all</div>
@@ -132,8 +132,23 @@
         </div>
         <div id="commandInput" class="hidden"><input class="input" placeholder="input"></div>
     </div>
+    <div id="customTestDurationPopupWrapper" class="popupWrapper" style="display:none; opacity: 1;">
+        <div id="customTestDurationPopup">
+            <div class="title">Test duration</div>
+            <input value="1" title="test duration" id="customTestDuration" name="duration">
+            <button id="customTestDurationPopupSubmit">ok</button>
+        </div>
+    </div>
+    <div id="customWordAmountPopupWrapper" class="popupWrapper" style="display:none; opacity: 1;">
+        <div id="customWordAmountPopup">
+            <div class="title">Word Amount</div>
+            <input value="1" title="word count" id="customWordCount" name="duration">
+            <button id="customWordCountPopupSubmit">ok</button>
+        </div>
+    </div>
 </div>
-<script src = "~/js/popups.js"></script>
+
+<script src = "~/js/popups.js?v=1"></script>
 <script src="~/js/site.js"></script>
 <script src="~/js/modifierControlls.js?v=15"></script>
 <script>
@@ -149,12 +164,22 @@
     let timer;
     let globalModifiers = null;
     let wordStopwatch;
+    let currentWordContainer = null;
 let timeRemaining;
 let timeSpent = 0;
 let isUppercase = false;
 
 function submitResult(testType,timeSpent)
 {
+    if(testType==3)
+    {
+
+            words = typedLetters.join('').split(' ').map(function(str){
+                return str + " ";
+            });
+            words[words.length-1].slice(0,-1);
+    }
+    
         const data = {
             TypedText: typedLetters,
             OriginalText: words,
@@ -257,25 +282,82 @@ function startTimer() {
             document.getElementById('time-remaining').innerText = globalModifiers.TimeAmount;
        }
     }
-
-    document.addEventListener('keydown', (event) => { 
+    function stopStopWatch()
+    {
+        clearInterval(wordStopwatch);
+        testSeconds.push([...typedLetters]);
+        submitResult(globalModifiers.TestType, timeSpent / 1000);
+       
+    }
+        document.addEventListener('keydown', (event) => { 
         if (document.getElementById("editProfilePopupWrapper").style.display == "grid" || document.getElementById("commandLineWrapper").style.display == "grid") {
             return;
         }
         if (event.keyCode === 32) {
             event.preventDefault();
         }
-        
+        if ((event.key == 'Enter' && event.shiftKey && globalModifiers.TestType == 3))
+        {
+          stopStopWatch();
+        }
+        if(globalModifiers.TestType==3)
+        {
+           
+            const isSpace = event.key === ' ';
+            if(currentWordContainer == null)
+            {
+                currentWordContainer = document.getElementById("words").querySelector('.word:last-child')
+            }
+            if (event.key === 'Backspace' && words[currentWordIndex] != '') {
+                currentWordContainer.removeChild(currentWordContainer.querySelectorAll('letter')[currentLetterIndex-1]);``
+                words[currentWordIndex].slice(0,-1);
+                wordsArray[currentWordIndex].slice(0, -1);
+            }
+            if (isSpace && words[currentWordIndex] != '') {
+                 const letterElement = document.createElement('letter');
+                letterElement.classList.add("correct");
+                letterElement.textContent = event.key;
+                currentWordContainer.appendChild(letterElement);
+                wordsArray[currentWordIndex] += (event.shiftKey ? event.key.toUpperCase() : event.key);
+                words[currentWordIndex] += (event.shiftKey ? event.key.toUpperCase() : event.key);
+                words.push('');
+                wordsArray.push('');
+                currentWordContainer = document.createElement('div');
+                currentWordContainer.classList.add('word');
+                document.getElementById("words").appendChild(currentWordContainer);
+            } 
+            else if (event.key.length === 1 &&  /[a-zA-Z]/.test(event.key)) {
+                wordsArray[currentWordIndex] += (event.shiftKey ? event.key.toUpperCase() : event.key);
+                words[currentWordIndex] += (event.shiftKey ? event.key.toUpperCase() : event.key);
+                const letterElement = document.createElement('letter');
+                letterElement.classList.add("correct");
+                letterElement.textContent = event.key;
+                currentWordContainer.appendChild(letterElement);
+            }
+        }
         const currentWord = wordsArray[currentWordIndex];
         const currentLetter = currentWord[currentLetterIndex];
+         if (event.key === 'Backspace') {
+            if (currentLetterIndex > 0) {
+                currentLetterIndex--;
+                typedLetters.pop();
+              
+                const letterElement = document.querySelector(`.word:nth-child(${currentWordIndex + 1}) > letter:nth-child(${currentLetterIndex + 1})`);
+                if (letterElement) {
+                    letterElement.classList.remove('correct', 'incorrect');
+                    const wordElement = document.querySelector(`.word:nth-child(${currentWordIndex + 1})`);
+                    wordElement.classList.remove('error');
 
-        if (event.key === currentLetter || (event.shiftKey && event.key.toUpperCase() === currentLetter)) {
+                }
+            }
+        }
+        else if (event.key === currentLetter || (event.shiftKey && event.key.toUpperCase() === currentLetter)) {
             typedLetters.push(event.key);
             if (globalModifiers.TimeAmount != null && timer === undefined) {
                 startTimer();
             }
 
-            if ((document.getElementById('wordSwitch').classList.contains('active') && wordStopwatch === undefined) || (document.getElementById('quoteSwitch').classList.contains('active') && wordStopwatch === undefined)) {
+            if ((globalModifiers.TestType == 1 || globalModifiers.TestType == 2 || globalModifiers.TestType == 3) && wordStopwatch === undefined) {
                 startWordStopwatch();
             }
             const letterElement = document.querySelector(`.word:nth-child(${currentWordIndex + 1}) > letter:nth-child(${currentLetterIndex + 1})`);
@@ -307,7 +389,7 @@ function startTimer() {
                     }  
                    previousLetterPos=currentLetterRect.top;
                 }
-                if (currentLetterIndex === currentWord.length) {
+                if (currentLetterIndex === currentWord.length && event.key == ' ') {
                     currentWordIndex++;
                     currentLetterIndex = 0;
 
@@ -325,20 +407,7 @@ function startTimer() {
 
                 console.error('Letter element not found!');
             }
-        }
-        else if (event.key === 'Backspace') {
-            if (currentLetterIndex > 0) {
-                currentLetterIndex--;
-                typedLetters.pop();
-                const letterElement = document.querySelector(`.word:nth-child(${currentWordIndex + 1}) > letter:nth-child(${currentLetterIndex + 1})`);
-                if (letterElement) {
-                    letterElement.classList.remove('correct', 'incorrect');
-                    const wordElement = document.querySelector(`.word:nth-child(${currentWordIndex + 1})`);
-                    wordElement.classList.remove('error');
-
-                }
-            }
-        }
+        }      
         else if (event.key === 'Escape'){
             resetTest();
             getTest(globalModifiers);
@@ -364,7 +433,7 @@ function startTimer() {
                 }
             }
         }
-        //  updateCaretPosition(currentWordIndex,currentLetterIndex);
+    
     });
 
     // Function to start the word stopwatch
@@ -376,10 +445,8 @@ function startTimer() {
             {
                 testSeconds.push([...typedLetters]);
             }
-            if (typedLetters.length === words.join('').length) {
-                clearInterval(wordStopwatch); 
-                testSeconds.push([...typedLetters]);
-                submitResult(1,timeSpent/1000);
+            if ((typedLetters.length === words.join('').length && globalModifiers.TestType == 1)) {
+                stopStopWatch()
             }
         }, 40); 
     }

@@ -44,7 +44,15 @@ document.getElementById('quoteSwitch').addEventListener('click', () => {
     resetTest();
     getTest(globalModifiers);
 });
-const timeConfigButtons = document.querySelectorAll('.time .textButton');
+
+document.getElementById('zenSwitch').addEventListener('click', () => {
+    globalModifiers.TestType = 3;
+    globalModifiers.TimeAmount = null;
+    globalModifiers.WordCount = null;
+    resetTest();
+    getTest(globalModifiers);
+});
+const timeConfigButtons = document.querySelectorAll('.time .timebutton');
 timeConfigButtons.forEach((button) => {
     button.addEventListener('click', () => {
         globalModifiers.TimeAmount = parseInt(button.getAttribute('timeconfig'));
@@ -54,7 +62,7 @@ timeConfigButtons.forEach((button) => {
     });
 });
 
-const wordCountButtons = document.querySelectorAll('.wordCount .textButton');
+const wordCountButtons = document.querySelectorAll('.wordCount .wordbutton');
 wordCountButtons.forEach((button) => {
     button.addEventListener('click', () => {
         globalModifiers.WordCount = parseInt(button.getAttribute('wordcount'));

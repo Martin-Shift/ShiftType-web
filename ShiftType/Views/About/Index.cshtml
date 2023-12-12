@@ -1,0 +1,212 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@using ShiftType.Models
+@using System.Text.Json
+@model AboutInfo
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "About - KeyFlex";
+}
+<div class="page pageAbout active" id="pageAbout" style="opacity: 1;">
+    <div class="scrollToTopButton invisible"><i class="fas fa-angle-double-up"></i></div>
+    <div class="created">
+        Created with love by Shift.<br><a href="#supporters_title">Supported</a> and <a href="#contributors_title">expanded</a> by Shift.<br>Launched on 12th of December, 2023.
+    </div>
+    <div class="section histogramChart">
+        <div class="triplegroup">
+            <div class="group" id="totalStartedTestsStat" aria-label="1 124 772 710 tests" data-balloon-pos="up">
+                <div class="label">total completed tests</div>
+                <div class="val">@Model.TotalTests</div>
+                <div class="valSmall">tests</div>
+            </div>
+            <div class="group" id="totalTimeTypingStat" aria-label="8 122 292 hours" data-balloon-pos="up">
+                <div class="label">total time typing</div>
+                <div class="val" id="totalTypingTime"></div>
+                <div class="valSmall" id="totalTypingTimeText"></div>
+            </div>
+            <div class="group" id="totalCompletedTestsStat" aria-label="378 547 445 tests" data-balloon-pos="up">
+                <div class="label">total users</div>
+                <div class="val" >@Model.TotalUsers</div>
+                <div class="valSmall">users</div>
+            </div>
+        </div>
+        <div class="chart" style="height:200px">
+            <canvas id="publicStatsHistogramChart"
+                    style="display: block; box-sizing: border-box; height: 200px; width: 831.2px;" height="250"
+                    width="1039"></canvas>
+        </div>
+        <p class="small">distribution of time 60 leaderboard results (wpm)</p>
+    </div>
+    <div class="section">
+        <div class="bigtitle">support</div>
+        <p>
+            Thanks to everyone who has supported this project. It would not be possible without you and your
+            continued support.
+        </p>
+        <div class="supportButtons">
+            <button id="supportMeAboutButton">
+                <div class="fas fa-donate"></div>Support
+            </button>
+        </div>
+    </div>
+    <div class="section">
+        <div class="bigtitle">credits</div>
+        <p>
+            <a href="https://monkeytype.com" target="_blank" rel="noreferrer noopener">
+                Monkeytype
+            </a>&nbsp;for the inspiration
+        </p>
+    </div>
+    <div id="ad-about-2-wrapper" class="ad advertisement ad-h" style="display: none !important;">
+        <div class="icon"><i class="fas fa-ad"></i></div>
+        <div id="ad-about-2"></div>
+    </div>
+    <div id="ad-about-2-small-wrapper" class="ad advertisement ad-h-s" style="display: none !important;">
+        <div class="icon small"><i class="fas fa-ad"></i></div>
+        <div id="ad-about-2-small"></div>
+    </div>
+</div>
+<div id="customTestDurationPopupWrapper" class="popupWrapper" style="display:none; opacity: 1;">
+    
+    <div id="customTestDurationPopup">
+        <form method="post" action="donate/checkout">
+        <div class="title">Amount to Donate ($)</div>
+        <input value="1" title="test duration" id="amountToDonate" name="amount">
+            <button type="submit" id="donateSubmit">Donate</button>
+        </form>
+        </div>
+   
+</div>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/canvasjs/1.7.0/canvasjs.min.js" integrity="sha512-FJ2OYvUIXUqCcPf1stu+oTBlhn54W0UisZB/TNrZaVMHHhYvLBV9jMbvJYtvDe5x/WVaoXZ6KB+Uqe5hT2vlyA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script>
+
+    var userChart = JSON.parse(`@Html.Raw(JsonSerializer.Serialize(Model.UserWpmChart))`);
+    var userLabels = JSON.parse(`@Html.Raw(JsonSerializer.Serialize(Model.UserWpmChartLabels))`);
+    var userCtx = document.getElementById('publicStatsHistogramChart').getContext('2d');
+    console.log(userChart);
+    console.log(userLabels);
+    var userchartData = {
+        labels: userLabels,
+        datasets: [{
+            label: 'Users',
+            backgroundColor: '#007acc',
+            borderColor: '#1e1e1e',
+            borderWidth: 10,
+            data: userChart,
+            barThickness: 560 / userChart.length,
+            barPercentage: 0.6,
+            categoryPercentage: 0.8,
+        }]
+    };
+
+    var seconds = parseInt(`@Html.Raw(Model.TotalTypingTime)`);
+    var raw = formatTime(seconds);
+    console.log(raw);
+    document.getElementById("totalTypingTime").textContent = raw.split(' ')[0];
+    document.getElementById("totalTypingTimeText").textContent = raw.split(' ')[1];
+    
+    var userchartOptions = {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+            y: {
+                beginAtZero: true
+            }
+        },
+        plugins: {
+            legend: {
+                display: false // Hide the legend
+            }
+        },
+        tooltips: {
+            enabled: false
+        },
+        scales: {
+            x: {
+                display: false
+            }
+        }
+
+    };
+    var timeChart = new Chart(userCtx, {
+        type: 'bar',
+        data: userchartData,
+        options: userchartOptions
+    });
+
+    function formatTime(seconds) {
+        if (seconds < 60) {
+            return seconds + ' seconds';
+        } else if (seconds < 3600) {
+            const minutes = seconds / 60;
+            return  Math.floor(minutes*100)/100 +  ' minutes';
+        } else if (seconds < 86400) {
+            const hours = seconds / 3600;
+            return Math.floor(hours * 100) / 100 + ' hours';
+        } else {
+            const days = seconds / 86400;
+            return Math.floor(days * 100) / 100 + ' days';
+        }
+    }
+
+
+    const customConfigButton = document.getElementById('supportMeAboutButton');
+
+    // Get the popup wrapper and form elements
+    const customTestDurationPopupWrapper = document.getElementById('customTestDurationPopupWrapper');
+    const customTestDurationPopup = document.getElementById('customTestDurationPopup');
+
+    // Attach a click event listener to the button
+    customConfigButton.addEventListener('click', function (event) {
+        event.preventDefault();
+
+        // Show the edit profile popup
+        customTestDurationPopupWrapper.style.display = 'grid';
+        customTestDurationPopupWrapper.focus();
+    });
+
+    // Optional: Close the popup when the user clicks outside the form
+    customTestDurationPopupWrapper.addEventListener('click', function (event) {
+        if (event.target === customTestDurationPopupWrapper) {
+            customTestDurationPopupWrapper.style.display = 'none';
+        }
+    });
+
+    // Optional: Close the popup when the 'ESC' key is pressed
+    document.addEventListener('keydown', function (event) {
+        if (event.key === 'Escape' || event.keyCode === 27) {
+            customTestDurationPopupWrapper.style.display = 'none';
+        }
+    });
+    //document.getElementById("donateSubmit").addEventListener("click", function () {
+
+
+    //    try {
+    //     var text = parseInt(document.getElementById("amountToDonate").value);
+    //        fetch('donate/checkout', {
+    //            method: 'POST',
+    //            headers: {
+    //                'Content-Type': 'application/json',
+    //            },
+    //            body: JSON.stringify(text),
+    //        })
+    //            .then(response => {
+    //                if (!response.ok) {
+    //                    throw new Error('Network response was not ok.');
+    //                }
+    //                return response.json();
+    //            })
+    //            .then(data=>{
+
+    //            });
+    //    }
+    //    catch (ex) {
+    //        console.error(ex);
+    //    }
+    //});
+
+
+</script>

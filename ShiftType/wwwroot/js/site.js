@@ -24,6 +24,7 @@ function showTestType(testType) {
         timeConfigButtons[0].classList.add('active');
         wordCountButtons.forEach(button => button.classList.remove('active'));
         quoteLengthButtons.forEach(button => button.classList.remove('active'));
+       
     } else if (testType === 'words') {
         wordCountButtons[0].classList.add('active');
         timeConfigButtons.forEach(button => button.classList.remove('active'));
@@ -32,6 +33,11 @@ function showTestType(testType) {
         quoteLengthButtons[0].classList.add('active');
         timeConfigButtons.forEach(button => button.classList.remove('active'));
         wordCountButtons.forEach(button => button.classList.remove('active'));
+    }
+    else if (testType === 'zen') {
+        document.getElementById('wordSwitch').classList.remove('active');
+        document.getElementById('quoteSwitch').classList.remove('active');
+        document.getElementById('timeSwitch').classList.remove('active');
     }
 }
 
@@ -42,7 +48,7 @@ document.getElementById('timeSwitch').addEventListener('click', () => {
     document.getElementById('timeSwitch').classList.add('active');
     document.getElementById('wordSwitch').classList.remove('active');
     document.getElementById('quoteSwitch').classList.remove('active');
-
+    document.getElementById('zenSwitch').classList.remove('active');
 });
 
 
@@ -52,6 +58,7 @@ document.getElementById('wordSwitch').addEventListener('click', () => {
     document.getElementById('wordSwitch').classList.add('active');
     document.getElementById('timeSwitch').classList.remove('active');
     document.getElementById('quoteSwitch').classList.remove('active');
+    document.getElementById('zenSwitch').classList.remove('active');
     const punctuationAndNumbers = document.querySelector('.puncAndNum');
     const wordCountButtons = document.querySelector('.wordCount');
     const quoteLengthButtons = document.querySelector('.quoteLength');
@@ -64,12 +71,17 @@ document.getElementById('quoteSwitch').addEventListener('click', () => {
     document.getElementById('quoteSwitch').classList.add('active');
     document.getElementById('timeSwitch').classList.remove('active');
     document.getElementById('wordSwitch').classList.remove('active');
+    document.getElementById('zenSwitch').classList.remove('active');
     const punctuationAndNumbers = document.querySelector('.puncAndNum');
     punctuationAndNumbers.style.display = 'none';
 });
 
 document.getElementById('zenSwitch').addEventListener('click', () => {
     showTestType('zen');
+    const punctuationAndNumbers = document.querySelector('.puncAndNum');
+    punctuationAndNumbers.style.display = 'none';
+    document.getElementById('zenSwitch').classList.add("active");
+
 });
 
 document.getElementById('customSwitch').addEventListener('click', () => {

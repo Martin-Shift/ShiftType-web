@@ -52,6 +52,9 @@ namespace ShiftType.Controllers
                 case TestTypes.Quote:
                     text += TestProviderService.GetRandomQuote(modifiers.Language, (QuoteType)modifiers.QuoteType, _context).Text;
                     break;
+                case TestTypes.Zen:
+                    text = "";
+                    break;
                 case TestTypes.Custom:
                     text = modifiers.CustomText;
                     break;
@@ -59,8 +62,6 @@ namespace ShiftType.Controllers
                     break;
             }
             var json = JsonSerializer.Serialize(modifiers);
-            // Assuming you're working with an ASP.NET application
-            // Add a cookie in one line
             Response.Cookies.Append("Modifiers", json, new CookieOptions() { Expires = DateTimeOffset.Now.AddDays(5) });
             
             return Ok(new { Test = text });

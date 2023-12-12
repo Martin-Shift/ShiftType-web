@@ -79,7 +79,7 @@ namespace ShiftType.Models
             .Select(i => $"{i}-{i + 9}")
             .ToList();
         }
-
+        public List<Donate> Donates { get; set; }
         public Profile() { }
 
 
